@@ -3,6 +3,7 @@ package com.example.notifycation
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -49,7 +50,17 @@ class FirstFragment : Fragment() {
             }
 
             indeterminateProgressNotification.setOnClickListener {
-                val notification = createIndeterminateProgressNotification()
+                val notification = createActionButtonNotification()
+                showNotification(notification)
+            }
+
+            expandablePictureNotification.setOnClickListener {
+                val notification = createExpandablePictureNotification()
+                showNotification(notification)
+            }
+
+            expandableTextNotification.setOnClickListener {
+                val notification = createExpandableTextNotification()
                 showNotification(notification)
             }
         }
@@ -89,6 +100,48 @@ class FirstFragment : Fragment() {
             .setContentTitle("Notification Title")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setProgress(0, 0, true)
+
+        return builder.build()
+    }
+
+    private fun createActionButtonNotification(): Notification {
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setContentTitle("Notification Title")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            // TODO: Add intent
+            .addAction(R.drawable.ic_notifications_24px, getString(R.string.action), null)
+
+        return builder.build()
+    }
+
+    // 折りたたみ可能な通知
+    private fun createExpandablePictureNotification(): Notification {
+        val bmp = BitmapFactory.decodeResource(resources, R.drawable.sample)
+        val style = NotificationCompat.BigPictureStyle()
+            .bigPicture(bmp)
+            .bigLargeIcon(null)
+
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setContentTitle("Notification Title")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            // アイコンを配置する
+            .setLargeIcon(bmp)
+            .setStyle(style)
+
+        return builder.build()
+    }
+
+    private fun createExpandableTextNotification(): Notification {
+        val style = NotificationCompat.BigTextStyle()
+            .bigText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setContentTitle("Notification Title")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setStyle(style)
 
         return builder.build()
     }
