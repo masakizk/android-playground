@@ -1,16 +1,12 @@
 package com.example.camera
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ImageCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,7 +17,6 @@ import java.util.concurrent.Executors
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
     private val camera: CameraFeature = CameraFeature()
@@ -36,12 +31,12 @@ class MainActivity : AppCompatActivity() {
         camera_capture_button.setOnClickListener { takePhoto() }
 
         // カメラの許可をもらう
-        if (allPermissionsGranted()) {
+        if (isPermissionGranted()) {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
                 this,
-                REQUIRED_PERMISSIONS,
+                arrayOf(Manifest.permission.CAMERA),
                 REQUEST_CODE_PERMISSIONS
             )
         }
@@ -56,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
+            if (isPermissionGranted()) {
                 startCamera()
             } else {
                 Toast.makeText(this, "許可が与えられていません.", Toast.LENGTH_SHORT).show()
@@ -73,8 +68,12 @@ class MainActivity : AppCompatActivity() {
         camera.takePhoto(this, baseContext, outputDirectory)
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    private fun isPermissionGranted(): Boolean {
+        val permission = ContextCompat.checkSelfPermission(
+            baseContext,
+            Manifest.permission.CAMERA
+        )
+        return permission == PackageManager.PERMISSION_GRANTED
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
