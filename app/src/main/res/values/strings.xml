@@ -18,6 +18,7 @@
     <string name="indeterminate_progress_notification">indeterminate progress notification</string>
     <string name="expandable_picture_notification">expandable picture notification</string>
     <string name="expandable_text_notification">expandable text notification</string>
+    <string name="group_notification">group notification</string>
 
     <string name="action">action</string>
 </resources>

@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.notifycation.databinding.FragmentFirstBinding
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -22,6 +23,8 @@ import kotlinx.coroutines.launch
 class FirstFragment : Fragment() {
     private lateinit var binding: FragmentFirstBinding
     private val CHANNEL_ID = "simple-notification-channel"
+    private val GROUP_NOTIFICATION = "com.android.example.notification"
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,6 +65,17 @@ class FirstFragment : Fragment() {
             expandableTextNotification.setOnClickListener {
                 val notification = createExpandableTextNotification()
                 showNotification(notification)
+            }
+
+            groupNotification.setOnClickListener {
+                val messages = (1..5).map { i ->
+                    val message = "This is notification $i"
+                    val notification = createGroupNotification(message)
+                    showNotification(notification, i*Random.nextInt())
+                    message
+                }
+                val summary = createSummaryNotification(messages)
+                showNotification(summary, Random.nextInt())
             }
         }
     }
@@ -146,12 +160,38 @@ class FirstFragment : Fragment() {
         return builder.build()
     }
 
+    //　通知グループ
+    private fun createGroupNotification(message: String): Notification {
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setContentText(message)
+            .setGroup(GROUP_NOTIFICATION)
+
+        return builder.build()
+    }
+
+    // Android 7.0（API レベル 24）以前のデバイス用にサマリーを作成する
+    private fun createSummaryNotification(message: List<String>): Notification {
+        val messageLines = NotificationCompat.InboxStyle()
+            .setBigContentTitle("${message.size} new messages")
+        message.forEach { message -> messageLines.addLine("Summary: $message") }
+
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setGroup(GROUP_NOTIFICATION)
+            .setContentTitle("Notification Group")
+            .setContentText("Summary")
+            .setStyle(messageLines)
+            .setGroupSummary(true)
+
+        return builder.build()
+    }
+
     // NotificationManagerに対して,通知を渡すことで表示できる
-    private fun showNotification(notification: Notification) {
+    private fun showNotification(notification: Notification, id: Int = R.string.app_name) {
         createNotificationChannel()
         val notificationManager = NotificationManagerCompat.from(requireContext())
-        notificationManager.notify(R.string.app_name, notification)
-
+        notificationManager.notify(id, notification)
     }
 
     // Android 8.0以上で通知を配信するには、
