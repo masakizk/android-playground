@@ -1,9 +1,12 @@
 package com.example.camera
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.AttributeSet
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -17,39 +20,34 @@ import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        private const val TAG = "CameraXBasic"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
-    private var imageCapture: ImageCapture? = null
+    private val camera: CameraFeature = CameraFeature()
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
-    private lateinit var camera: CameraFeature
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Request camera permissions
+        camera_capture_button.setOnClickListener { takePhoto() }
+
+        // カメラの許可をもらう
         if (allPermissionsGranted()) {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
             )
         }
 
-        // Set up the listener for take photo button
-        camera_capture_button.setOnClickListener { takePhoto() }
-
         outputDirectory = getOutputDirectory()
-
         cameraExecutor = Executors.newSingleThreadExecutor()
-
-        camera = CameraFeature(this, this)
     }
 
     override fun onRequestPermissionsResult(
@@ -68,10 +66,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
-        camera.startCamera(viewFinder)
+        camera.startCamera(this, this, viewFinder)
     }
 
-    private fun takePhoto() {}
+    private fun takePhoto() {
+        camera.takePhoto(this, baseContext, outputDirectory)
+    }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
