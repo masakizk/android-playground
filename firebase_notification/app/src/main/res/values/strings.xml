@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FirebaseNotification</string>
+    <string name="access_registered_token">access registered token</string>
+    <string name="msg_token_fmt">token: %s</string>
 </resources>
