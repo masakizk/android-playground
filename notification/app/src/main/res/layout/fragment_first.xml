@@ -7,6 +7,16 @@
     android:padding="32dp">
 
     <Button
+        android:id="@+id/notification_channel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/notification_chanel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
         android:id="@+id/simple_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

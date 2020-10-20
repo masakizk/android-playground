@@ -19,8 +19,8 @@ class FirstFragment : Fragment() {
     private lateinit var notifications: Notifications
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFirstBinding.inflate(inflater, container, false)
         notifications = Notifications(requireContext(), getString(R.string.channel_name), getString(R.string.channel_description))
@@ -29,6 +29,10 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.apply {
+            notificationChannel.setOnClickListener {
+                MyNotificationChannel.showNotificationChanelSetting(requireActivity())
+            }
+
             simpleNotification.setOnClickListener {
                 val notification = notifications.simpleNotification()
                 notifications.showNotification(notification)
