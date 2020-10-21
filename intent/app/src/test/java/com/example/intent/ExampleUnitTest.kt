@@ -1,4 +1,4 @@
-package com.example.retrofit
+package com.example.intent
 
 import org.junit.Test
 
