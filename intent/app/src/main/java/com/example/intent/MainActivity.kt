@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    // 暗黙的なインテント
     private fun sendMessage() {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
