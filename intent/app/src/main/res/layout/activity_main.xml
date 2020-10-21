@@ -21,4 +21,16 @@
         android:layout_height="wrap_content"
         android:text="@string/go_to_second_activity" />
 
+    <Button
+        android:id="@+id/show_app_chooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_application_chooser" />
+
+    <Button
+        android:id="@+id/action_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_send" />
+
 </LinearLayout>

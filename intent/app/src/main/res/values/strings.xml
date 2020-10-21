@@ -12,4 +12,6 @@
     <string name="main_activity">Main Activity</string>
     <string name="go_to_second_activity">go to second activity</string>
     <string name="second_activity">second activity</string>
+    <string name="show_application_chooser">show application chooser</string>
+    <string name="action_send">ACTION_SEND</string>
 </resources>
