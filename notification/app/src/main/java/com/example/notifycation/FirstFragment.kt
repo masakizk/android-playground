@@ -76,6 +76,16 @@ class FirstFragment : Fragment() {
                 val summary = notifications.summaryNotification(messages)
                 notifications.showNotification(summary, Random.nextInt())
             }
+
+            actionNotification.setOnClickListener {
+                val notification = notifications.actionButtonNotification()
+                notifications.showNotification(notification)
+            }
+
+            contentNotification.setOnClickListener {
+                val notification = notifications.contentIntentNotification()
+                notifications.showNotification(notification)
+            }
         }
     }
 }
