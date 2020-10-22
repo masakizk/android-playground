@@ -23,6 +23,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 再起動時にレシーバーを呼び出せるようにする
+        AlarmReceiver.enableReceiver(this)
+
         alarmMgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmIntent = Intent(this, AlarmReceiver::class.java).let { intent ->
             PendingIntent.getBroadcast(this, 0, intent, 0)
