@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="30dp"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <Button
+        android:id="@+id/elapsed_realtime"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/elapsed_realtime"/>
+
+    <Button
+        android:id="@+id/elapsed_realtime_wakeup"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/elapsed_realtime_wakeup"/>
+
+    <Button
+        android:id="@+id/rtc"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/rtc"/>
+
+    <Button
+        android:id="@+id/rtc_wakeup"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/rtc_wakeup"/>
+</LinearLayout>
