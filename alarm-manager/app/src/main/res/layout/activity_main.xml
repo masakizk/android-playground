@@ -30,4 +30,22 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="@string/rtc_wakeup"/>
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/cancel"/>
+
+    <Button
+        android:id="@+id/inexact_repeat"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/inexact_repeat"/>
+
+    <Button
+        android:id="@+id/exact_repeat"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/exact_repeat"/>
 </LinearLayout>

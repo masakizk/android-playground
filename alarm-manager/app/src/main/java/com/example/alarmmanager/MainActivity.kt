@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
             elapsedRealtimeWakeup.setOnClickListener { elapsedRealtimeWakeup() }
             rtc.setOnClickListener { rtc() }
             rtcWakeup.setOnClickListener { rtcWakeup() }
+            cancel.setOnClickListener { cancel() }
+            inexactRepeat.setOnClickListener { inexactRepeat() }
+            exactRepeat.setOnClickListener { exactRepeat() }
         }
     }
 
@@ -95,5 +98,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun cancel(){
         alarmMgr.cancel(alarmIntent)
+    }
+
+    // 厳密でないリピート
+    // 複数の不正確なアラームが同期され、同時にトリガーされる
+    // 電池消耗を抑えることができる。
+    private fun inexactRepeat() {
+        alarmMgr.setInexactRepeating(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + 10 * 1000,
+            AlarmManager.INTERVAL_HALF_HOUR,
+            alarmIntent
+        )
+    }
+
+    private fun exactRepeat() {
+        alarmMgr.setRepeating(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + 10 * 1000,
+             60 * 1000,
+            alarmIntent
+        )
     }
 }

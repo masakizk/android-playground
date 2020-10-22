@@ -1,16 +1,11 @@
 <resources>
     <string name="app_name">AlarmManager</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="elapsed_realtime_wakeup">ELAPSED_REALTIME_WAKEUP</string>
     <string name="elapsed_realtime">ELAPSED_REALTIME</string>
     <string name="rtc">RTC</string>
     <string name="rtc_wakeup">RTC_WAKEUP</string>
+    <string name="cancel">cancel</string>
+    <string name="inexact_repeat">INEXACT REPEAT</string>
+    <string name="exact_repeat">EXACT_REPEAT</string>
 </resources>
