@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.exoplayer.databinding.ActivityMainBinding
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
 
 
@@ -62,13 +64,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializePlayer() {
-        player = SimpleExoPlayer.Builder(this).build()
+        // adaptive streamingを実現するために、track selectionを追加
+        // どのトラックを取得するかを決める
+        val trackSelector = DefaultTrackSelector(this).apply {
+            // 品質優先
+            setParameters(this.buildUponParameters().setMaxVideoSizeSd())
+        }
+        player = SimpleExoPlayer.Builder(this)
+            .setTrackSelector(trackSelector)
+            .build()
+
         playerView.player = player
 
+        // fromUri: ファイル拡張子によってメディアフォーマットを判断する
         val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp4))
-        val secondMediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
+
+        val soundMediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
+
+        // DASHを再生するにはBuilderを使う
+        // DASHにはファイル拡張子が存在しないのでMimeTypeを指定する
+        val dashMediaItem = MediaItem.Builder()
+            .setUri(getString(R.string.media_url_dash))
+            .setMimeType(MimeTypes.APPLICATION_MPD)
+            .build()
+
+
         player?.setMediaItem(mediaItem)
-        player?.addMediaItem(secondMediaItem);
+        player?.addMediaItem(soundMediaItem);
+        player?.addMediaItem(dashMediaItem);
 
         /**
          * プレイヤーの設定を読み込み
