@@ -11,6 +11,7 @@ android {
         applicationId "com.example.exoplayer"
         minSdkVersion 16
         targetSdkVersion 30
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
 
@@ -52,4 +53,6 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-dash:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer"
+
+    implementation 'com.android.support:multidex:1.0.3'
 }
