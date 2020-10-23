@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ExoPlayer</string>
     <string name="media_url_mp3">https://storage.googleapis.com/exoplayer-test-media-0/play.mp3</string>
+    <string name="media_url_mp4">https://www.radiantmediaplayer.com/media/big-buck-bunny-360p.mp4</string>
 </resources>

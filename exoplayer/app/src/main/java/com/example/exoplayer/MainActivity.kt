@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         player = SimpleExoPlayer.Builder(this).build()
         playerView.player = player
 
-        val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
+        val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp4))
         player?.setMediaItem(mediaItem)
 
         player?.playWhenReady = playWhenReady
