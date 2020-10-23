@@ -66,8 +66,13 @@ class MainActivity : AppCompatActivity() {
         playerView.player = player
 
         val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp4))
+        val secondMediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
         player?.setMediaItem(mediaItem)
+        player?.addMediaItem(secondMediaItem);
 
+        /**
+         * プレイヤーの設定を読み込み
+         */
         player?.playWhenReady = playWhenReady
         player?.seekTo(currentWindow, playbackPosition)
         player?.prepare()
@@ -85,12 +90,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun releasePlayer() {
         if (player != null) {
+            /**
+             * プレイヤーの設定を変数に保存
+             */
             // Play/Pause state
             playWhenReady = player!!.playWhenReady
             // current play back position
             playbackPosition = player!!.currentPosition
             // current window index
             currentWindow = player!!.currentWindowIndex
+            /**
+             * プレイヤーを解放
+             */
             player!!.release()
             player = null
         }
