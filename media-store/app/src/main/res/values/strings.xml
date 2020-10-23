@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MediaStore</string>
+    <string name="load_image">load image</string>
+    <string name="show_select_tool">show select tool</string>
+</resources>
