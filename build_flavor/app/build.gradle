@@ -22,7 +22,28 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
     }
+
+    flavorDimensions "version"
+    productFlavors {
+        apple {
+            dimension "version"
+            applicationIdSuffix ".apple"
+            versionNameSuffix "-apple"
+        }
+
+        banana {
+            dimension "version"
+            applicationIdSuffix ".banana"
+            versionNameSuffix "-banana"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
