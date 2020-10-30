@@ -18,10 +18,21 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var playerView: PlayerView
     private var player: SimpleExoPlayer? = null
+    private lateinit var playbackStateListener: PlaybackStateListener
 
+    /**
+     *  プレイヤーの状態
+     */
+    // 再生 or 一時停止
     private var playWhenReady = true
+    // 現在のウィンドウインデックス
     private var currentWindow = 0
+    // 現在の再生箇所
     private var playbackPosition: Long = 0
+
+    companion object{
+        private val TAG: String = MainActivity::class.java.name
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +40,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playerView = binding.videoView
+
+        playbackStateListener = PlaybackStateListener()
     }
 
+    // プレーヤーを初期化する
     override fun onStart() {
         super.onStart()
         if (Util.SDK_INT >= 24) {
@@ -38,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // プレーヤーを初期化する
     override fun onResume() {
         super.onResume()
 
@@ -67,14 +80,22 @@ class MainActivity : AppCompatActivity() {
         // adaptive streamingを実現するために、track selectionを追加
         // どのトラックを取得するかを決める
         val trackSelector = DefaultTrackSelector(this).apply {
-            // 品質優先
+            // Sd: Standard-definition television
             setParameters(this.buildUponParameters().setMaxVideoSizeSd())
         }
-        player = SimpleExoPlayer.Builder(this)
-            .setTrackSelector(trackSelector)
-            .build()
 
-        playerView.player = player
+        if(player == null){
+            player = SimpleExoPlayer.Builder(this)
+                .setTrackSelector(trackSelector)
+                .build()
+                .apply {
+                    // リスナーを設定
+                    addListener(playbackStateListener)
+                    prepare()
+                }
+
+            playerView.player = player
+        }
 
         // fromUri: ファイル拡張子によってメディアフォーマットを判断する
         val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp4))
@@ -116,16 +137,15 @@ class MainActivity : AppCompatActivity() {
             /**
              * プレイヤーの設定を変数に保存
              */
-            // Play/Pause state
             playWhenReady = player!!.playWhenReady
-            // current play back position
             playbackPosition = player!!.currentPosition
-            // current window index
             currentWindow = player!!.currentWindowIndex
+
             /**
              * プレイヤーを解放
              */
-            player!!.release()
+            player?.removeListener(playbackStateListener)
+            player?.release()
             player = null
         }
     }
