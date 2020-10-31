@@ -27,6 +27,7 @@ class SecondFragment : Fragment() {
     lateinit var router: Router
 
     private val args: SecondFragmentArgs by navArgs()
+    private val message get() = args.message
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,9 +39,9 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<Button>(R.id.button_second).setOnClickListener {
-            router.navigateToFirstFragment(findNavController(), "Hello From Second Fragment")
+            router.navigateToFirstFragment(findNavController())
         }
 
-        view.findViewById<TextView>(R.id.textview_second).text = args.message
+        view.findViewById<TextView>(R.id.textview_second).text = message
     }
 }

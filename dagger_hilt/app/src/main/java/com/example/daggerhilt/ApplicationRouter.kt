@@ -17,7 +17,7 @@ class ApplicationRouter : Router {
         )
     }
 
-    override fun navigateToFirstFragment(controller: NavController, message: String) {
+    override fun navigateToFirstFragment(controller: NavController) {
         controller.navigate(
             SecondFragmentDirections.actionFirstFragment()
         )
