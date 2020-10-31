@@ -1,2 +1,5 @@
+include ':core'
+include ':banana'
+include ':apple'
 include ':app'
 rootProject.name = "DaggerHilt"
