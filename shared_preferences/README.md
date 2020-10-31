@@ -2,7 +2,7 @@
 ## Shared Preferencesの種類
 - ### 一つアクティビティに対する共有環境設定ファイル
   ```kotlin
-  getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
+  getPreferences(Context.MODE_PRIVATE)
   ```
 - ### 名前で識別される共有環境設定ファイル
   ```kotlin
@@ -20,6 +20,7 @@ with(editor) {
 }
 ```
 ## 値の取得
+キーとデフォルト値を指定する。
 ```kotlin
 pref.getInt(COUNT_KEY, 0)
 ```
