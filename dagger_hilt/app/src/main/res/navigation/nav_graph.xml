@@ -7,22 +7,26 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.example.daggerhilt.FirstFragment"
+        android:name="com.example.apple.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
-
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_second_fragment"
+            app:destination="@id/SecondFragment">
+            <argument
+                android:name="message"
+                app:argType="string" />
+        </action>
+
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.example.daggerhilt.SecondFragment"
+        android:name="com.example.banana.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/action_first_fragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

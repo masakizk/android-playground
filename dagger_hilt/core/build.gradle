@@ -43,6 +43,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    // Navigation
+    def nav_version = "2.3.0"
+    implementation "android.arch.navigation:navigation-runtime:$nav_version"
+
     // Dagger
     implementation "com.google.dagger:hilt-android:2.28-alpha"
     kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
