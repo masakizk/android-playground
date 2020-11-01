@@ -23,6 +23,9 @@ class MainActivity : AppCompatActivity() {
             reward.setOnClickListener {
                 startActivity(Intent(applicationContext, RewardActivity::class.java))
             }
+            nativeAd.setOnClickListener {
+                startActivity(Intent(applicationContext, NativeAdActivity::class.java))
+            }
 
         }
     }

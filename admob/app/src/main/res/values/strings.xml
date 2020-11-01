@@ -12,4 +12,6 @@
     <string name="go_banner">go banner</string>
     <string name="go_reward">go reward</string>
     <string name="show_reward_ad">SHOW REWARD AD</string>
+    <string name="go_native">GO NATIVE</string>
+    <string name="mute_this_ad">MUTE THIS AD</string>
 </resources>

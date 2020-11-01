@@ -23,5 +23,11 @@
         android:layout_height="wrap_content"
         android:text="@string/go_reward" />
 
+    <Button
+        android:id="@+id/native_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/go_native" />
+
 
 </LinearLayout>
