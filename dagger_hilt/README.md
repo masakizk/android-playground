@@ -233,6 +233,27 @@ fun providePhone(
 
 <hr>
 
+### @InstallIn
+
+<img src="./doc/component.png" width="300px">
+<img src="./doc/component_lifecycle.png" width="300px">  
+
+Moduleにおいて`@InstallIn`を指定することで、  
+そのモジュールの生存期間を指定する。
+
+```kotlin
+// ApplicationComponentを指定
+// -> アプリケーションが動作中、存在できる
+// -> アプリケーションのどこからでもアクセスできる
+@InstallIn(ApplicationComponent::class)
+
+// FragmentComponentを指定
+// -> Fragmentが生存中は利用可能
+// -> Activityには依存注入できない(ActivityComponent > FragmentComponent)
+@InstallIn(FragmentComponent::class)
+```
+<hr>
+
 
 ## 事前定義済みのアノテーション
 `@ApplicationContext`、`@ActivityContext`は事前に定義されており
