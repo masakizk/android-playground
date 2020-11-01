@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">AdMob</string>
+    <string name="change_ad_size">Change Ad Size</string>
+    <string name="smart_banner">SMART_BANNER</string>
+    <string name="leaderboard">LEADERBOARD</string>
+    <string name="full_banner">FULL_BANNER</string>
+    <string name="medium_rectangle">MEDIUM_RECTANGLE</string>
+    <string name="large_banner">LARGE_BANNER</string>
+    <string name="banner">BANNER</string>
+    <string name="show_interstitial">SHOW INTERSTITIAL</string>
+    <string name="go_interstitial">GO INTERSTITIAL</string>
+    <string name="go_banner">go banner</string>
+    <string name="go_reward">go reward</string>
+    <string name="show_reward_ad">SHOW REWARD AD</string>
+    <string name="go_native">GO NATIVE</string>
+    <string name="mute_this_ad">MUTE THIS AD</string>
+    <string name="adaptive_banner">ADAPTIVE BANNER</string>
+</resources>
