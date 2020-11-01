@@ -14,4 +14,5 @@
     <string name="show_reward_ad">SHOW REWARD AD</string>
     <string name="go_native">GO NATIVE</string>
     <string name="mute_this_ad">MUTE THIS AD</string>
+    <string name="adaptive_banner">ADAPTIVE BANNER</string>
 </resources>
