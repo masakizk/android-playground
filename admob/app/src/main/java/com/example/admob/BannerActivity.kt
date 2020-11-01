@@ -15,7 +15,6 @@ class BannerActivity : Activity() {
         binding = ActivityBannerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        MobileAds.initialize(this) {}
 
         binding.apply {
             loadAd(banner)

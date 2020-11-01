@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.example.admob.databinding.ActivityInterstitialBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 
 class InterstitialActivity : Activity() {
     private lateinit var binding: ActivityInterstitialBinding
@@ -17,8 +16,6 @@ class InterstitialActivity : Activity() {
         super.onCreate(savedInstanceState)
         binding = ActivityInterstitialBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        MobileAds.initialize(this) {}
 
         mInterstitialAd = InterstitialAd(this)
         mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
@@ -36,7 +33,6 @@ class InterstitialActivity : Activity() {
         else
             Toast.makeText(this, "The interstitial wasn't loaded yet.", Toast.LENGTH_LONG).show()
     }
-
 
 
 }
