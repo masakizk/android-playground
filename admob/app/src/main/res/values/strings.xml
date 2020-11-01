@@ -9,4 +9,7 @@
     <string name="banner">BANNER</string>
     <string name="show_interstitial">SHOW INTERSTITIAL</string>
     <string name="go_interstitial">GO INTERSTITIAL</string>
+    <string name="go_banner">go banner</string>
+    <string name="go_reward">go reward</string>
+    <string name="show_reward_ad">SHOW REWARD AD</string>
 </resources>
