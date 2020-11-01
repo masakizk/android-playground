@@ -1,5 +1,6 @@
 package com.example.admob
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.admob.databinding.ActivityMainBinding
@@ -25,6 +26,10 @@ class MainActivity : AppCompatActivity() {
             loadAd(fullBanner)
             loadAd(leaderBoard)
             loadAd(smartBanner)
+
+            interstitial.setOnClickListener {
+                startActivity(Intent(applicationContext, InterstitialActivity::class.java))
+            }
         }
     }
 

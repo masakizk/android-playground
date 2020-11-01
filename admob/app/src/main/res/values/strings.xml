@@ -7,4 +7,6 @@
     <string name="medium_rectangle">MEDIUM_RECTANGLE</string>
     <string name="large_banner">LARGE_BANNER</string>
     <string name="banner">BANNER</string>
+    <string name="show_interstitial">SHOW INTERSTITIAL</string>
+    <string name="go_interstitial">GO INTERSTITIAL</string>
 </resources>
