@@ -1,18 +1,26 @@
 package com.example.daggerhilt
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.daggerhilt.calculator.Calculator
 import com.example.daggerhilt.car.Car
 import com.example.daggerhilt.database.DatabaseInterface
+import com.example.daggerhilt.fruits.FruitsApplication
 import com.example.daggerhilt.logger.MyLogger
 import com.example.daggerhilt.phone.Phone
+import com.example.daggerhilt.viewmodel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     // コンストラクタインジェクション
     @Inject
     lateinit var calculator: Calculator
@@ -33,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var logger: MyLogger
 
+    private val viewModel: MainActivityViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,9 +51,13 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Toast.makeText(this, "10+1=${calculator.add(1, 10)}", Toast.LENGTH_LONG).show()
-        Toast.makeText(this, "database: ${database.loadMessage()}", Toast.LENGTH_LONG).show()
-        Toast.makeText(this, "car: ${car.drive()}", Toast.LENGTH_LONG).show()
-        Toast.makeText(this, "phone: ${phone.batteryLevel()}", Toast.LENGTH_LONG).show()
+        Log.d(TAG, "database: ${database.loadMessage()}")
+        Log.d(TAG, "car: ${car.drive()}")
+        Log.d(TAG, "phone: ${phone.batteryLevel()}")
         logger.log("Hello")
+        viewModel.log("Hello")
+
+        val fruitsApplication = FruitsApplication()
+        fruitsApplication.showFruits(applicationContext)
     }
 }
