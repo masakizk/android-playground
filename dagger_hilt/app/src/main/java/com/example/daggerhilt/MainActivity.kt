@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "car: ${car.drive()}")
         Log.d(TAG, "phone: ${phone.batteryLevel()}")
         logger.log("Hello")
-        viewModel.log("Hello")
 
         val fruitsApplication = FruitsApplication()
         fruitsApplication.showFruits(applicationContext)
