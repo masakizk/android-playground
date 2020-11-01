@@ -10,6 +10,7 @@ android {
     defaultConfig {
         applicationId "com.example.admob"
         minSdkVersion 16
+        multiDexEnabled true
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -30,6 +31,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    viewBinding{
+        enabled = true
+    }
 }
 
 dependencies {
@@ -42,4 +46,10 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // AdMob
+    implementation 'com.google.android.gms:play-services-ads:19.5.0'
+
+    // MultiDex
+    implementation 'com.android.support:multidex:1.0.3'
 }

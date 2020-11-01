@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AdMob</string>
+    <string name="change_ad_size">Change Ad Size</string>
+    <string name="smart_banner">SMART_BANNER</string>
+    <string name="leaderboard">LEADERBOARD</string>
+    <string name="full_banner">FULL_BANNER</string>
+    <string name="medium_rectangle">MEDIUM_RECTANGLE</string>
+    <string name="large_banner">LARGE_BANNER</string>
+    <string name="banner">BANNER</string>
 </resources>
