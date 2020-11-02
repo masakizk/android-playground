@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         Glide.with(this)
             .load("https://picsum.photos/450/300")
             .listener(listener)
-            .override(200, 450)
+            .override(450, 300)
             .into(binding.fixedSizeImage)
     }
 
