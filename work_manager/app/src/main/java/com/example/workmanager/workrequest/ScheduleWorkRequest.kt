@@ -14,7 +14,7 @@ object ScheduleWorkRequest {
         処理のスケジュール設定
         一回限りの処理の設定
      */
-    fun createOneTimeWork(): WorkRequest {
+    fun createOneTimeWork(): OneTimeWorkRequest {
         // 一回限りの処理のスケジュール
         // 追加の設定が不要な場合は、fromを使用
         return OneTimeWorkRequest.from(SendWorker::class.java)
@@ -24,7 +24,7 @@ object ScheduleWorkRequest {
         処理のスケジュール設定
         定期的な処理の設定
      */
-    fun createPeriodicWork(): WorkRequest {
+    fun createPeriodicWorkRequest(): PeriodicWorkRequest {
         // 1時間に一回のスケジュール
         // 最小のインターバルは15分
         return PeriodicWorkRequestBuilder<SendWorker>(
