@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Vibration</string>
+    <string name="vibrate_once">Vibrate Once</string>
+    <string name="vibrate_twice">Vibrate Twice</string>
+    <string name="vibrate_repeatedly">Vibrate Repeatedly</string>
+    <string name="stop_vibrate">Stop Vibrate</string>
 </resources>
