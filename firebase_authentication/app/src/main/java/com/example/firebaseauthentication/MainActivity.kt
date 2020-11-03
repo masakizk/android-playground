@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             signInButton.setOnClickListener { signIn() }
             signOutButton.setOnClickListener { signOut() }
+            revokeButton.setOnClickListener { revoke() }
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -78,6 +79,13 @@ class MainActivity : AppCompatActivity() {
         auth.signOut()
         googleSignInClient
             .signOut()
+            .addOnCompleteListener { clearUI() }
+    }
+
+    private fun revoke() {
+        auth.signOut()
+        googleSignInClient
+            .revokeAccess()
             .addOnCompleteListener { clearUI() }
     }
 
