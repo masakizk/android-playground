@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.work.*
 import com.example.workmanager.databinding.ActivityMainBinding
 import com.example.workmanager.worker.EncryptWorker
+import com.example.workmanager.worker.LongTimeWorker
 import com.example.workmanager.worker.SendMessageWorker
 import com.example.workmanager.worker.SendMessagesWorker
 import com.example.workmanager.workrequest.DataWorkRequest
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             createUniqueWork.setOnClickListener { createUniqueWork() }
             createWorkChain.setOnClickListener { createWorkChain() }
             createWorkChainParallel.setOnClickListener { createWorkChainParallel() }
+            createLongTimeWorker.setOnClickListener { createLongTimeWorker() }
         }
     }
 
@@ -48,12 +50,13 @@ class MainActivity : AppCompatActivity() {
             )
 
         val info = workManager.getWorkInfosForUniqueWorkLiveData("sendMessage")
-        info.observe(this) {workInfos ->
-            log(workInfos.map { "id: ${it.id}, progress: ${it.progress}, state: ${it.state}\n" }.toString())
+        info.observe(this) { workInfos ->
+            log(workInfos.map { "id: ${it.id}, progress: ${it.progress}, state: ${it.state}\n" }
+                .toString())
         }
     }
 
-    private fun createWorkChain(){
+    private fun createWorkChain() {
         val encrypt = OneTimeWorkRequestBuilder<EncryptWorker>()
             .setInputData(workDataOf("MESSAGE" to "Hello"))
             .build()
@@ -69,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             .enqueue()
     }
 
-    private fun createWorkChainParallel(){
+    private fun createWorkChainParallel() {
         val encryptApple = OneTimeWorkRequestBuilder<EncryptWorker>()
             .setInputData(workDataOf("MESSAGE" to "Apple"))
             .build()
@@ -98,6 +101,11 @@ class MainActivity : AppCompatActivity() {
             .beginWith(listOf(encryptApple, encryptBanana))
             .then(sendMessage)
             .enqueue()
+    }
+
+    private fun createLongTimeWorker() {
+        val worker = OneTimeWorkRequestBuilder<LongTimeWorker>().build()
+        workManager.enqueue(worker)
     }
 
 

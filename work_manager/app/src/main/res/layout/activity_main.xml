@@ -30,4 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="create work chain(parallel)" />
+
+    <Button
+        android:id="@+id/create_long_time_worker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="create long time work" />
 </LinearLayout>
