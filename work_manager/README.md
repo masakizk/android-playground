@@ -41,7 +41,7 @@ implementation "androidx.work:work-runtime-ktx:$work_version"
         .enqueue(DataWorkRequest.createWorkRequest())
     ```
 
-## Workerデータをやり取りする
+## Workerとデータのやり取りする
 入力データKey-Valueのペアとして,Dataオブジェクトに保存される。
 ```kotlin
 // WorkerRequest
@@ -64,23 +64,6 @@ val outputData = workDataOf(
 )
 
 return Result.success(outputData)
-```
-
-データの取得
-
-Workerの`inputData`から取得できる
-
-```kotlin
-class SendMessageWorker(context: Context, workerParameters: WorkerParameters): Worker(context, workerParameters) {
-    override fun doWork(): Result {
-        val message = inputData.getString("MESSAGE") ?: return Result.failure()
-        val sender = inputData.getString("SENDER") ?: return Result.failure()
-
-        sendMessage(message, sender)
-        return Result.success()
-    }
-		...
-}
 ```
 ## 長時間ワーカー
 - 処理の実行中にプロセスを可能な限り維持する必要があることを OS に通知できる
