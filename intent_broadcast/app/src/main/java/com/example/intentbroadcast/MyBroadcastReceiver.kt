@@ -32,9 +32,5 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                 Toast.makeText(context, "Received\n$action\n$uri\n", Toast.LENGTH_LONG).show()
             }
         }
-
-    }
-
-    private fun showMessage(context: Context, message: String){
     }
 }
