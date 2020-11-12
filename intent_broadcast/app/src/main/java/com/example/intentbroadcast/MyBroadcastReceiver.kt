@@ -25,10 +25,6 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                 Toast.makeText(context, "Received: APPLE!", Toast.LENGTH_LONG).show()
             }
 
-            Intent.ACTION_BOOT_COMPLETED -> {
-                Toast.makeText(context, "Boot Completed", Toast.LENGTH_LONG).show()
-            }
-
             else -> {
                 // インテントの指定なし
                 val action = "Action: ${intent.action}"
