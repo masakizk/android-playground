@@ -1,4 +1,21 @@
 # Dagger Hilt
+- [Hiltを利用するための準備](#Hiltを利用するための準備)
+- [依存注入の方法](#依存注入の方法)
+  * [コンストラクタインジェクション](#コンストラクタインジェクション)
+  * [@Binds](#@binds)
+  * [Module](#module)
+  * [@Provides](#@Provides)
+  * [Module](#module-1)
+  * [生成時に依存するものを注入してほしいとき](#生成時に依存するものを注入してほしいとき)
+- [同じ型に複数のバイディングを定義](#同じ型に複数のバイディングを定義)
+- [事前定義済みのアノテーション](#事前定義済みのアノテーション)
+- [@EntryPoint](#@entrypoint)
+- [Assisted Inject](#assisted-inject)
+- [Worker Inject](#worker-inject)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
 ## Hiltを利用するための準備
 ### インストール
 build.gradle(ルートプロジェクト)
@@ -407,5 +424,81 @@ class MainActivity : AppCompatActivity() {
 		private val assistedInjectViewModel: AssistedInjectViewModel by viewModels {
 		    viewModelProviderFactoryOf { factory.create("Alice") }
 		}
+}
+```
+
+## Worker Inject
+[](https://developer.android.com/training/dependency-injection/hilt-jetpack?hl=ja)
+
+[Android WorkManager Worker can not be injected using Dagger Hilt `@WorkerInject`](https://stackoverflow.com/questions/62355282/android-workmanager-worker-can-not-be-injected-using-dagger-hilt-workerinject/62355423#62355423)
+
+### build.gradle
+
+```groovy
+dependencies {
+		// WorkManager
+    implementation 'androidx.work:work-runtime-ktx:2.4.0'
+		// Dagger Hilt
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
+		// Dagger Hilt - Work Manager
+    implementation 'androidx.hilt:hilt-work:1.0.0-alpha02'
+}
+```
+
+### Worker
+
+以下を引数に設定可能
+
+- `@Assisted`によってDIされるもの
+- `@Singleton`スコープのオブジェクト
+- スコープの設定されていないオブジェクト
+
+```kotlin
+class GreetWorker @WorkerInject constructor(
+		@Assisted @ApplicationContext context: Context,
+    @Assisted workerParam: WorkerParameters,
+    private val workerDependency: WorkerDependencyInterface,
+): Worker(context, workerParam)
+```
+
+```kotlin
+@Module
+@InstallIn(ApplicationComponent::class)
+object WorkerModule {
+    @Provides
+    fun provideWorkerDependency(): WorkerDependencyInterface {
+        return WorkerDependency()
+    }
+}
+```
+
+### AndroidManifest
+
+Hiltが生成するWorkerFactoryが利用できるようにAndroidManifestを修正する
+
+```kotlin
+<application>
+    <provider
+        android:name="androidx.work.impl.WorkManagerInitializer"
+        android:authorities="${applicationId}.workmanager-init"
+        tools:node="remove" />
+</application>
+```
+
+### Application
+
+`Application`クラスで `Configuration.Provider` インターフェースを実装
+
+`HiltWorkFactory`をDIして、WorkManager設定に渡す
+
+```kotlin
+@HiltAndroidApp
+class MyApplication: Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder().setWorkerFactory(workerFactory).build()
 }
 ```
