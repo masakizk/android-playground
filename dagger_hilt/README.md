@@ -47,7 +47,7 @@ class MyApplication: Application() {
 		.../>
 ```
 
-### AndroidEntoryPoint
+### AndroidEntryPoint
 
 AndroidのクラスにHiltがDIするためには`@AndroidEntryPoint`をつけて、教える必要がある
 
@@ -334,3 +334,78 @@ Daggerから提供されるインスタンスを使用したいとき、
 理由として、実際にはDaggerから提供されるクラスを利用したいのではなくエントリーポイントを必要としているから。(提供されるものよりも、Daggerによって提供されるインスタンスを使えるようになることを目的としている)
 
 **エントリーポイントインターフェースはそのクラスの`@Inject` の代わりとして使うことができる**
+
+
+<hr>
+
+## Assisted Inject
+dagger Hiltの機能ではないが、ViewからViewModelに値を渡したいときなどに利用できる。
+[square/AssistedInject](https://github.com/square/AssistedInject)
+
+```kotlin
+dependencies {
+    // Assisted Inject
+    compileOnly 'com.squareup.inject:assisted-inject-annotations-dagger2:0.6.0'
+    kapt 'com.squareup.inject:assisted-inject-processor-dagger2:0.6.0'
+}
+```
+
+### ViewModel
+
+- `@AssistedInject`アノテーションのついたコンストラクタを作成
+- `@Assisted`でAssistedInjectから受け取りたい引数を指定
+- `@AssistedInject.Factory` で`@Assisted`に対応する引数を受け取るメソッドを作成
+
+```kotlin
+class AssistedInjectViewModel @AssistedInject constructor(
+    @Assisted val userName: String,
+    // 引数に＠Assistedのついていないものがないとエラーが起こる
+    calculator: Calculator
+) : ViewModel() {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(userName: String): AssistedInjectViewModel
+    }
+}
+
+fun AssistedInjectViewModel.Factory.create(
+    userName: String
+): AssistedInjectViewModel {
+    return create(userName)
+}
+```
+
+### Module
+
+`@AssistedModule`アノテーションのついたモジュールを作成
+
+```kotlin
+@Module
+@AssistedModule
+@InstallIn(ActivityComponent::class)
+object AssistedInjectModule
+```
+
+### ViewModel Factory
+
+```kotlin
+inline fun <VM: ViewModel> viewModelProviderFactoryOf(
+    crossinline f: () -> VM
+): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T = f() as T
+}
+```
+### View
+```kotlin
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
+
+		lateinit var factory: AssistedInjectViewModel.Factory
+		
+		private val assistedInjectViewModel: AssistedInjectViewModel by viewModels {
+		    viewModelProviderFactoryOf { factory.create("Alice") }
+		}
+}
+```
