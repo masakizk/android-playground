@@ -5,6 +5,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.daggerhilt.assistedinject.AssistedInjectViewModel
 import com.example.daggerhilt.assistedinject.viewModelProviderFactoryOf
 import com.example.daggerhilt.calculator.Calculator
@@ -14,6 +16,7 @@ import com.example.daggerhilt.fruits.FruitsApplication
 import com.example.daggerhilt.logger.MyLogger
 import com.example.daggerhilt.phone.Phone
 import com.example.daggerhilt.viewmodel.MainActivityViewModel
+import com.example.daggerhilt.workmanager.GreetWorker
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -68,6 +71,10 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "calculator(view model): 10+1=${viewModel.add(1, 10)}")
         logger.log("Hello")
         Log.d(TAG, "assisted inject view model: ${assistedInjectViewModel.userName}")
+
+        val workManager = WorkManager.getInstance(this)
+        val request = OneTimeWorkRequestBuilder<GreetWorker>().build()
+        workManager.enqueue(request)
 
         val fruitsApplication = FruitsApplication()
         fruitsApplication.showFruits(applicationContext)
