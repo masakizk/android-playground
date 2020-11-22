@@ -50,10 +50,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Toast.makeText(this, "10+1=${calculator.add(1, 10)}", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "watch log!", Toast.LENGTH_LONG).show()
+        Log.d(TAG, "calculator: 10+1=${calculator.add(1, 10)}")
         Log.d(TAG, "database: ${database.loadMessage()}")
         Log.d(TAG, "car: ${car.drive()}")
         Log.d(TAG, "phone: ${phone.batteryLevel()}")
+        Log.d(TAG, "calculator(view model): 10+1=${viewModel.add(1, 10)}")
         logger.log("Hello")
 
         val fruitsApplication = FruitsApplication()
