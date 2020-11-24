@@ -15,7 +15,6 @@ object AnaliseImage {
         val rotation = viewFinder.display.rotation
 
         return ImageAnalysis.Builder()
-            // 画像改造とを指定
             .setTargetAspectRatio(aspectRatio)
             .setTargetRotation(rotation)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)

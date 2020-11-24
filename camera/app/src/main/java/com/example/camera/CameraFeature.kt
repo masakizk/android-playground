@@ -48,7 +48,7 @@ class CameraFeature(
         imageCapture = CaptureImage.useCase(viewFinder)
         imageAnalysis = AnaliseImage.useCase(viewFinder, cameraExecutor)
 
-        // 後方カメラをデフォルトに指定
+        // カメラの選択(前カメラ or 後ろカメラ)
         val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
         // レンダリングする前にバインドを解除

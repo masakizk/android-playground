@@ -36,12 +36,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         binding.turnCamera.setOnClickListener { cameraFeature.switchCamera() }
-        binding.photoPreviewButton.setOnClickListener {
-            if (outputDirectory.listFiles()?.isNotEmpty() == true) {
-
-            }
-        }
-
 
         // カメラの許可をもらう
         if (isPermissionGranted()) startCamera()
