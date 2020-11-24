@@ -28,4 +28,14 @@
             android:key="@string/advanced_attributes" />
 
     </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="saved_value"
+        app:title="Shared Preferences">
+
+        <CheckBoxPreference
+            app:key="@string/saved_boolean_value"
+            app:title="Boolean value" />
+
+    </PreferenceCategory>
 </PreferenceScreen>

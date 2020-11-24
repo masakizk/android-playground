@@ -3,6 +3,8 @@
     <!--This section is for basic attributes -->
     <string name="basic_preferences">Basic attributes</string>
 
+    <string name="saved_boolean_value">saved_boolean_value</string>
+
     <string name="title_basic_preference">Preference</string>
     <string name="summary_basic_preference">Simple preference with no special attributes</string>
 
