@@ -8,6 +8,7 @@
         <Preference
             app:key="feedback"
             app:summary="Report technical issues or suggest new features"
+            android:icon="@drawable/ic_launcher_background"
             app:title="Send feedback" />
 
     </PreferenceCategory>
