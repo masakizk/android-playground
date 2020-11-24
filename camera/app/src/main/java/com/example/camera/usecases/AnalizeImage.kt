@@ -1,9 +1,30 @@
-package com.example.camera.camerax
+package com.example.camera.usecases
 
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.camera.view.PreviewView
+import com.example.camera.ScreenAspectRatio
 import java.nio.ByteBuffer
+import java.util.concurrent.ExecutorService
+
+object AnaliseImage {
+    // 画像解析のユースケース
+    fun useCase(viewFinder: PreviewView, executor: ExecutorService): ImageAnalysis {
+        val aspectRatio = ScreenAspectRatio(viewFinder)
+        val rotation = viewFinder.display.rotation
+
+        return ImageAnalysis.Builder()
+            // 画像改造とを指定
+            .setTargetAspectRatio(aspectRatio)
+            .setTargetRotation(rotation)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+            .also {
+                it.setAnalyzer(executor, LuminosityAnalyzer())
+            }
+    }
+}
 
 class LuminosityAnalyzer: ImageAnalysis.Analyzer {
 
@@ -23,7 +44,7 @@ class LuminosityAnalyzer: ImageAnalysis.Analyzer {
         Log.d(TAG, "Average luminosity: $luma")
         image.close()
     }
-    
+
     companion object{
         private const val TAG = "LuminosityAnalyzer"
     }
