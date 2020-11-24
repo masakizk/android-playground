@@ -3,29 +3,29 @@ package com.example.camera.camerax
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.util.Size
 import android.widget.Toast
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class CameraFeature {
     companion object {
         private const val TAG = "CameraFeature"
     }
 
-    // 撮影のユースケース
     private var imageCapture: ImageCapture? = null
 
     fun startCamera(
         context: Context,
         lifecycleOwner: LifecycleOwner,
         viewFinder: PreviewView,
+        executor: ExecutorService
     ) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
@@ -34,6 +34,9 @@ class CameraFeature {
             // ライフサイクルに対応させるため、カメラを開閉するタスクが不要になる
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
+            /**
+             * ユースケース
+             */
             // カメラプレビューのユースケース
             val preview = Preview.Builder().build()
                 .also { it.setSurfaceProvider(viewFinder.surfaceProvider) }
@@ -41,6 +44,18 @@ class CameraFeature {
             // カメラ撮影のユースケース
             imageCapture = ImageCapture.Builder().build()
 
+            // 画像解析のユースケース
+            val imageAnalysis  =ImageAnalysis.Builder()
+                .setTargetResolution(Size(1280,720))
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(executor, LuminosityAnalyzer())
+                }
+
+            /**
+             * ユースケースをカメラにバインド
+             */
             // 後方カメラをデフォルトに指定
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -55,6 +70,7 @@ class CameraFeature {
                     /*use cases...*/
                     preview,
                     imageCapture,
+                    imageAnalysis
                 )
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)

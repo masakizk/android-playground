@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import com.example.camera.R
 import com.example.camera.databinding.ActivityCameraXBasicBinding
 import kotlinx.android.synthetic.main.activity_camera_x_basic.*
-import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -33,6 +32,9 @@ class CameraXActivity : AppCompatActivity() {
 
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
 
+        outputDirectory = getOutputDirectory()
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
         // カメラの許可をもらう
         if (isPermissionGranted()) startCamera()
         else ActivityCompat.requestPermissions(
@@ -40,9 +42,6 @@ class CameraXActivity : AppCompatActivity() {
             arrayOf(Manifest.permission.CAMERA),
             REQUEST_CODE_PERMISSIONS
         )
-
-        outputDirectory = getOutputDirectory()
-        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     override fun onDestroy() {
@@ -66,7 +65,7 @@ class CameraXActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
-        camera.startCamera(this, this, viewFinder)
+        camera.startCamera(this, this, viewFinder, cameraExecutor)
     }
 
     private fun takePhoto() {
