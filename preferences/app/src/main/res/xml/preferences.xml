@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:key="help_category"
+        app:title="Help">
+
+        <Preference
+            app:key="feedback"
+            app:summary="Report technical issues or suggest new features"
+            android:icon="@drawable/ic_launcher_background"
+            app:title="Send feedback" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="others">
+
+        <Preference
+            android:title="@string/dialogs"
+            android:key="@string/dialogs"/>
+
+        <Preference
+            android:title="@string/widgets"
+            android:key="@string/widgets" />
+
+        <Preference
+            android:title="@string/advanced_attributes"
+            android:key="@string/advanced_attributes" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="saved_value"
+        app:title="Shared Preferences">
+
+        <CheckBoxPreference
+            app:key="@string/saved_boolean_value"
+            app:title="Boolean value" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
