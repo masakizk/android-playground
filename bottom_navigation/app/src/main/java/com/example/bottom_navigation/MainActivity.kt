@@ -19,11 +19,12 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment)
 
-        // トップレベルの遷移先先となる Menu ID を渡す
-        // MenuのIDとNavigationのIDを一致させる
+        // トップレベルの遷移先となる Menu ID を渡す
         val topLevelDestinationIds = setOf(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
         val appBarConfiguration = AppBarConfiguration(topLevelDestinationIds)
+        // NavControllerとActionBarを対応付け
         setupActionBarWithNavController(navController, appBarConfiguration)
+        // BottomNavigationViewとNavControllerを対応付
         binding.navView.setupWithNavController(navController)
     }
 }
