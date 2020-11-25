@@ -1,4 +1,4 @@
-package com.example.camera
+package com.example.camera.views
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -9,40 +9,46 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.camera.CameraFeature
+import com.example.camera.R
+import com.example.camera.databinding.ActivityMainBinding
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val REQUEST_CODE_PERMISSIONS = 10
-    }
 
-    private val camera: CameraFeature = CameraFeature()
+    private lateinit var cameraFeature: CameraFeature
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        camera_capture_button.setOnClickListener { takePhoto() }
-
-        // カメラの許可をもらう
-        if (isPermissionGranted()) {
-            startCamera()
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.CAMERA),
-                REQUEST_CODE_PERMISSIONS
-            )
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
+        cameraFeature = CameraFeature(binding.viewFinder, this, cameraExecutor)
+
+        binding.cameraCaptureButton.setOnClickListener { takePhoto() }
+        binding.turnCamera.setOnClickListener { cameraFeature.switchCamera() }
+
+        // カメラの許可をもらう
+        if (isPermissionGranted()) startCamera()
+        else ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.CAMERA),
+            REQUEST_CODE_PERMISSIONS
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
     }
 
     override fun onRequestPermissionsResult(
@@ -61,11 +67,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
-        camera.startCamera(this, this, viewFinder)
+        cameraFeature.startCamera(this)
     }
 
     private fun takePhoto() {
-        camera.takePhoto(this, baseContext, outputDirectory)
+        cameraFeature.takePhoto(this, baseContext, outputDirectory)
     }
 
     private fun isPermissionGranted(): Boolean {
@@ -85,8 +91,7 @@ class MainActivity : AppCompatActivity() {
             mediaDir else filesDir
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
+    companion object {
+        private const val REQUEST_CODE_PERMISSIONS = 10
     }
 }
