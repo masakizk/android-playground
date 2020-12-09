@@ -16,6 +16,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/et_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_hello_world" />
+
     <Button
         android:id="@+id/button_change_message"
         android:layout_width="wrap_content"
@@ -23,6 +29,6 @@
         android:text="change message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_hello_world" />
+        app:layout_constraintTop_toBottomOf="@id/et_message" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
