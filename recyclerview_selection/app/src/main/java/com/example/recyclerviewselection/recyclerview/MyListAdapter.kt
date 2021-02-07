@@ -25,6 +25,10 @@ internal class MyListAdapter : ListAdapter<MyItem, MyViewHolder>(MyDiffUtil()) {
         return position.toLong()
     }
 
+    fun getKey(position: Int): String {
+        return currentList[position].id
+    }
+
     fun getPosition(key: String): Int {
         return currentList.indexOfFirst { it.id == key }
     }

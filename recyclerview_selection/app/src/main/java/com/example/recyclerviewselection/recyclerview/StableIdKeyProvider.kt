@@ -17,8 +17,8 @@ internal class StableIdKeyProvider(
     private val adapter: MyListAdapter
 ) : ItemKeyProvider<String>(SCOPE_MAPPED) {
 
-    override fun getKey(position: Int): String? {
-        return adapter.currentList[position].id
+    override fun getKey(position: Int): String {
+        return adapter.getKey(position)
     }
 
     override fun getPosition(key: String): Int {
