@@ -21,8 +21,18 @@ internal class MyListAdapter : ListAdapter<MyItem, MyViewHolder>(MyDiffUtil()) {
         holder.bind(getItem(position), tracker?.isSelected(getItem(position).id) ?: false)
     }
 
+    override fun onViewAttachedToWindow(holder: MyViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.setIsRecyclable(false)
+    }
+
+    override fun onViewDetachedFromWindow(holder: MyViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.setIsRecyclable(true)
+    }
+
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return currentList[position].id.hashCode().toLong()
     }
 
     fun getKey(position: Int): String {

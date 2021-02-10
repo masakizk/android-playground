@@ -16,6 +16,7 @@ internal class MyViewHolder(
     fun bind(item: MyItem, isActivated: Boolean) {
         id = item.id
         binding.message.text = item.value
+        binding.executePendingBindings()
         itemView.isActivated = isActivated
     }
 

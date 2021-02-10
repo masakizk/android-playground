@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -45,7 +46,7 @@ class FirstFragment : Fragment() {
             ).withSelectionPredicate(
                 SelectionPredicates.createSelectAnything() // 複数項目を制限なしに選択できるようにする。
             ).build()
-
+            tracker.onRestoreInstanceState(savedInstanceState)
             adapter.tracker = tracker
         }
 
@@ -62,6 +63,11 @@ class FirstFragment : Fragment() {
         adapter.submitList(items)
 
         return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

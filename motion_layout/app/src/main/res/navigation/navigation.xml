@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.motionlayout.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_constraintFragment"
+            app:destination="@id/constraintFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_transitionFragment"
+            app:destination="@id/transitionFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_propertySetFragment"
+            app:destination="@id/propertySetFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_motionFragment"
+            app:destination="@id/motionFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_customAttributeFragment"
+            app:destination="@id/customAttributeFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_motionInterpolator"
+            app:destination="@id/motionInterpolator" />
+        <action
+            android:id="@+id/action_mainFragment_to_onClickFragment"
+            app:destination="@id/onClickFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/constraintFragment"
+        android:name="com.example.motionlayout.constraint.LayoutFragment"
+        android:label="ConstraintFragment" />
+    <fragment
+        android:id="@+id/transitionFragment"
+        android:name="com.example.motionlayout.constraint.TransitionFragment"
+        android:label="TransitionFragment" />
+    <fragment
+        android:id="@+id/propertySetFragment"
+        android:name="com.example.motionlayout.constraint.PropertySetFragment"
+        android:label="PropertySetFragment" />
+    <fragment
+        android:id="@+id/motionFragment"
+        android:name="com.example.motionlayout.constraint.MotionFragment"
+        android:label="MotionFragment" />
+    <fragment
+        android:id="@+id/customAttributeFragment"
+        android:name="com.example.motionlayout.constraint.CustomAttributeFragment"
+        android:label="CustomAttributeFragment" />
+    <fragment
+        android:id="@+id/motionInterpolator"
+        android:name="com.example.motionlayout.transitoin.MotionInterpolator"
+        android:label="MotionInterpolator" />
+    <fragment
+        android:id="@+id/onClickFragment"
+        android:name="com.example.motionlayout.transitoin.OnClickFragment"
+        android:label="OnClickFragment" />
+</navigation>
