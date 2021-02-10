@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MotionLayout</string>
+    <string name="constraint">Constraint</string>
+    <string name="constraint_set_constraint_motion">Constraint Set / Constraint Motion</string>
+    <string name="start_animation">Start Animation</string>
+    <string name="constraint_layout">[Constraint] Layout</string>
+    <string name="constraint_transition">[Constraint] Transition</string>
+    <string name="constraint_property_set">[Constraint] Property Set</string>
+    <string name="constraint_motion">[Constraint] Motion</string>
+    <string name="constraint_custom_attribute">[Constraint] Custom Attribute</string>
+    <string name="transition_motion_interpolator">[Transition] MotionInterpolator</string>
+    <string name="transition_onclick">[Transition] onClick</string>
 </resources>
