@@ -4,17 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="32dp"
     tools:context=".MainActivity">
 
     <Button
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/button_start_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start_main_service"
-        tools:layout_editor_absoluteX="188dp"
-        tools:layout_editor_absoluteY="592dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_start_fullscreen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Full Screen Service"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </LinearLayout>
