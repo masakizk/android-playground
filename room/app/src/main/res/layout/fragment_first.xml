@@ -4,25 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="36dp"
     tools:context=".FirstFragment">
 
-    <TextView
-        android:id="@+id/textview_first"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_first_fragment"
-        app:layout_constraintBottom_toTopOf="@id/button_first"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_first"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/actions"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/next"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/button_save_books"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Books" />
+
+        <Button
+            android:id="@+id/button_find_books"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Find Books" />
+
+        <Button
+            android:id="@+id/button_save_clubs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Clubs" />
+
+        <Button
+            android:id="@+id/button_find_clubs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Find Clubs" />
+
+        <Button
+            android:id="@+id/button_clear_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clear All" />
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/actions"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview_first" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Result"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
