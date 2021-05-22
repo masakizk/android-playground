@@ -36,15 +36,13 @@ class DiscoveryActivity : AppCompatActivity(), BluetoothDeviceViewHolder.Callbac
                     mDevices[device.address] = BluetoothData(device, rssi)
 
                     val devices = mDevices
-                        .entries
-                        .sortedBy { it.key }
+                        .values
+                        .sortedBy { it.device.address }
                         .map {
-                            val rssi = it.value.rssi
-                            val device = it.value.device
                             BluetoothDeviceData(
-                                name = device.name ?: "無名の端末",
-                                address = device.address,
-                                rssi = rssi.toInt()
+                                name = it.device.name ?: "無名の端末",
+                                address = it.device.address,
+                                rssi = it.rssi.toInt()
                             )
                         }
 
