@@ -62,11 +62,12 @@ class DiscoveryActivity : AppCompatActivity(), BluetoothDeviceViewHolder.Callbac
 
         mBinding = ActivityDiscoveryBinding.inflate(layoutInflater)
         mBinding.apply {
-            buttonStart.setOnClickListener { startDiscovery() }
             listDevice.adapter = mBluetoothDeviceListAdapter
             listDevice.layoutManager = LinearLayoutManager(this@DiscoveryActivity)
         }
         setContentView(mBinding.root)
+
+        startDiscovery()
     }
 
     private fun startDiscovery() {

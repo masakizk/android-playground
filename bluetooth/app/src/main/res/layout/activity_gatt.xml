@@ -1,41 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="36dp">
 
-    <TextView
-        android:id="@+id/text_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="HELLO WORLD" />
-
-    <TextView
-        android:id="@+id/text_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="HELLO WORLD" />
-
-    <TextView
-        android:id="@+id/text_rssi"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="0dp"
         android:gravity="center"
-        android:textSize="80sp"
-        tools:text="-1" />
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/actions"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/button_connect"
+        <TextView
+            android:id="@+id/text_rssi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="80sp"
+            tools:text="-1" />
+
+        <TextView
+            android:id="@+id/text_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="DEVICE NAME" />
+
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:indeterminate="true"
+            android:visibility="invisible" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/create_bond" />
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <Button
-        android:id="@+id/button_connect_gatt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/connect_gatt" />
-</androidx.appcompat.widget.LinearLayoutCompat>
+        <Button
+            android:id="@+id/button_connect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_bond" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

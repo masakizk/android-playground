@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.android.bluetooth.databinding.ActivityGattBinding
@@ -27,26 +28,29 @@ class ConnectGattActivity : AppCompatActivity() {
         mBinding = ActivityGattBinding.inflate(layoutInflater)
         mBinding.apply {
             buttonConnect.setOnClickListener { connect() }
-            buttonConnectGatt.setOnClickListener { connectGatt() }
         }
         setContentView(mBinding.root)
+
+        connectGatt()
     }
 
     private fun connectGatt() {
         if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
         mBinding.textDevice.text = "${mDevice?.name}"
 
+        var isConnected = false
         val bluetoothGatt = mDevice.connectGatt(this, false, object : BluetoothGattCallback() {
             override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                 super.onConnectionStateChange(gatt, status, newState)
                 lifecycleScope.launch(Dispatchers.Main) {
                     when (newState) {
                         BluetoothProfile.STATE_CONNECTED -> {
-                            mBinding.textState.text = "CONNECTED"
+                            Log.d(TAG, "onConnectionStateChange: CONNECTED")
+                            isConnected = true
                         }
                         BluetoothProfile.STATE_DISCONNECTED -> {
                             Log.d(TAG, "onConnectionStateChange: DISCONNECTED")
-                            mBinding.textState.text = "DISCONNECTED"
+                            isConnected = false
                         }
                     }
                 }
@@ -64,8 +68,11 @@ class ConnectGattActivity : AppCompatActivity() {
         bluetoothGatt.connect()
         lifecycleScope.launch {
             while (true) {
+                bluetoothGatt.connect()
                 bluetoothGatt.readRemoteRssi()
-                delay(500)
+                mBinding.progressCircular.visibility =
+                    if (isConnected) View.INVISIBLE else View.VISIBLE
+                delay(1 * 1000)
             }
         }
     }
