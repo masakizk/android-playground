@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.os.Vibrator
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
@@ -28,23 +30,36 @@ class FullScreenService : Service() {
         scope.launch {
             delay(5000)
 
+            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "FullScreenService::WAKE_LOCK"
+            ).apply {
+                acquire()
+            }
+
             /**
              * Show fullscreen activity.
              */
-            val fullScreenIntent = Intent(applicationContext, FullscreenActivity::class.java)
-            val fullscreenPendingIntent = PendingIntent.getActivity(
-                applicationContext,
-                0,
-                fullScreenIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            fullscreenPendingIntent.send()
+//            val fullScreenIntent =
+//                Intent(applicationContext, FullscreenActivity::class.java).apply {
+//                    setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                }
+//            val fullscreenPendingIntent = PendingIntent.getActivity(
+//                applicationContext,
+//                0,
+//                fullScreenIntent,
+//                PendingIntent.FLAG_UPDATE_CURRENT
+//            )
+//            fullscreenPendingIntent.send()
 
-            val notification = createNotification("Do some work...")
-            mNotificationManager.notify(NOTIFICATION_ID, notification)
+            val notification = createNotification("Do some work...", fullscreen = true)
+            startForeground(NOTIFICATION_ID, notification)
 
             val mVibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             mVibrator.vibrate(longArrayOf(0, 500, 500), -1)
+
+            wakeLock.release()
 
             delay(5000)
             stopSelf()
@@ -57,20 +72,11 @@ class FullScreenService : Service() {
         return null
     }
 
-    private fun createNotification(message: String): Notification {
+    private fun createNotification(message: String, fullscreen: Boolean = false): Notification {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
-
-//        val fullScreenIntent = Intent(applicationContext, FullscreenActivity::class.java)
-//        val fullscreenPendingIntent = PendingIntent.getActivity(
-//            applicationContext,
-//            0,
-//            fullScreenIntent,
-//            PendingIntent.FLAG_UPDATE_CURRENT
-//        )
-
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).apply {
             setSmallIcon(R.drawable.ic_launcher_foreground)
             setChannelId(NOTIFICATION_CHANNEL_ID)
@@ -79,12 +85,22 @@ class FullScreenService : Service() {
 
             priority = NotificationCompat.PRIORITY_HIGH
             setCategory(NotificationCompat.CATEGORY_ALARM)
+        }
 
+        if(fullscreen){
+            Log.d(TAG, "createNotification: Create")
             /**
              * https://developer.android.com/training/notify-user/time-sensitive
              * https://developer.android.com/guide/components/activities/background-starts
              */
-//            setFullScreenIntent(fullscreenPendingIntent, true)
+            val fullScreenIntent = Intent(applicationContext, FullscreenActivity::class.java)
+            val fullscreenPendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                0,
+                fullScreenIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            notificationBuilder.setFullScreenIntent(fullscreenPendingIntent, true)
         }
 
         return notificationBuilder.build()
@@ -103,5 +119,8 @@ class FullScreenService : Service() {
     companion object {
         private const val NOTIFICATION_ID = 2000
         private const val NOTIFICATION_CHANNEL_ID = "FULLSCREEN_SERVICE"
+
+        private const val TAG = "FullScreenService"
+
     }
 }

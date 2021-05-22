@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Bluetooth</string>
+    <string name="discovery">Discovery</string>
+    <string name="ble_scan">BLE Scan</string>
+    <string name="connect_gatt">connect GATT</string>
+    <string name="create_bond">create bond</string>
+</resources>
