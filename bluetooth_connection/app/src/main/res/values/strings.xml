@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BluetoothConnection</string>
+    <string name="disconnect">disconnect</string>
+    <string name="connect">connect</string>
+    <string name="send_message">send message</string>
+    <string name="receive_message">receive message</string>
+    <string name="central">central</string>
+    <string name="peripheral">peripheral</string>
+    <string name="received_message">received message</string>
+    <string name="sender_info">sender info</string>
 </resources>
