@@ -1,6 +1,7 @@
 package com.example.android.bluetoothconnection.peripheral
 
 import android.bluetooth.*
+import android.util.Log
 import com.example.android.bluetoothconnection.databinding.ActivityPeripheralBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +68,7 @@ class TextMessageBluetoothGattServerCallback(
             offset,
             value
         )
-
+        Log.d(TAG, "onCharacteristicReadRequest: [$requestId] $offset-${offset + value.size} ${String(value)}")
         if (_mGattServer == null) return
 
         if (characteristic?.uuid != PeripheralActivity.UUID_WRITE) {
@@ -89,26 +90,16 @@ class TextMessageBluetoothGattServerCallback(
             }
         }
 
+        mGattServer.sendResponse(
+            device,
+            requestId,
+            BluetoothGatt.GATT_SUCCESS,
+            offset,
+            value
+        )
+    }
 
-        if (offset < charValue.size) {
-            var len: Int = value.size
-            if (offset + len > charValue.size) len = charValue.size - offset
-            System.arraycopy(value, 0, charValue, offset, len)
-            mGattServer.sendResponse(
-                device,
-                requestId,
-                BluetoothGatt.GATT_SUCCESS,
-                offset,
-                null
-            )
-        } else {
-            mGattServer.sendResponse(
-                device,
-                requestId,
-                BluetoothGatt.GATT_FAILURE,
-                offset,
-                null
-            )
-        }
+    companion object {
+        private const val TAG = "TextMessageBluetoothGat"
     }
 }

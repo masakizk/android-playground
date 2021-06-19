@@ -15,15 +15,22 @@
         android:text="@string/received_message"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/text_received_message"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="32sp"
-        app:layout_constraintTop_toBottomOf="@id/label_received_message"
-        tools:text="HELLO WORLD" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/group_sender_info"
+        app:layout_constraintTop_toBottomOf="@id/label_received_message">
+
+        <TextView
+            android:id="@+id/text_received_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            tools:text="HELLO WORLD" />
+    </ScrollView>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/group_sender_info"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:orientation="vertical"

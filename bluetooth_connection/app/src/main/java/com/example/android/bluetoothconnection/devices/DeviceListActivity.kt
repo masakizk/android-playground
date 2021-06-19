@@ -3,54 +3,28 @@ package com.example.android.bluetoothconnection.devices
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.bluetoothconnection.databinding.ActivityDeviceListBinding
 import com.example.android.bluetoothconnection.device.DeviceActivity
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class DeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListener {
     private lateinit var mBinding: ActivityDeviceListBinding
     private lateinit var mBluetoothAdapter: BluetoothAdapter
     private val mDevices: MutableMap<String, BluetoothDevice> = mutableMapOf()
     private val mBluetoothDeviceListAdapter = DeviceListAdapter(this)
-
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent) {
-            when (intent.action) {
-                BluetoothDevice.ACTION_FOUND -> {
-                    val device =
-                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-
-                    Log.d(TAG, "onReceive: ${device?.name} ${device?.address}")
-                    if (device == null || device.name == null) return
-                    mDevices[device.address] = device
-
-                    val devices = mDevices
-                        .values
-                        .sortedBy { it.address }
-
-                    mBluetoothDeviceListAdapter.submitList(devices)
-                }
-            }
-        }
-    }
-
+    private var mBluetoothScanCallback: ScanCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-        registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
 
         mBinding = ActivityDeviceListBinding.inflate(layoutInflater)
         mBinding.apply {
@@ -66,13 +40,26 @@ class DeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListene
                 ), 100
             )
         }
+    }
 
-        lifecycleScope.launch {
-            while (true) {
-                if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
-                Log.d(TAG, "onCreate: ${mBluetoothAdapter.startDiscovery()}")
-                delay(12 * 1000)
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            100 -> {
+                scan()
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBluetoothAdapter.bluetoothLeScanner.stopScan(mBluetoothScanCallback)
         }
     }
 
@@ -83,6 +70,34 @@ class DeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListene
             deviceAddress = device.address
         )
         startActivity(intent)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun scan() {
+        if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
+        mBluetoothScanCallback = object : ScanCallback() {
+            override fun onScanResult(callbackType: Int, result: ScanResult?) {
+                super.onScanResult(callbackType, result)
+                val device = result?.device ?: return
+                if (device.address == null || device.name == null) return
+
+                mDevices[device.address] = device
+
+                val devices = mDevices
+                    .values
+                    .sortedBy { it.address }
+
+                mBluetoothDeviceListAdapter.submitList(devices)
+            }
+
+            override fun onScanFailed(errorCode: Int) {
+                super.onScanFailed(errorCode)
+                Toast.makeText(this@DeviceListActivity, "Failed: $errorCode", Toast.LENGTH_LONG)
+                    .show()
+                Log.d(TAG, "onScanFailed: $errorCode")
+            }
+        }
+        mBluetoothAdapter.bluetoothLeScanner.startScan(mBluetoothScanCallback)
     }
 
     companion object {

@@ -19,6 +19,7 @@ class PeripheralActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityPeripheralBinding
     private lateinit var mBleManager: BluetoothManager
     private lateinit var mGattServer: BluetoothGattServer
+    private var mAdvertiseCallback: AdvertiseCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,14 @@ class PeripheralActivity : AppCompatActivity() {
         mGattServer.addService(createGattService())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             startAdvertising()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onDestroy() {
+        super.onDestroy()
+        mAdvertiseCallback?.let {
+            mBleManager.adapter.bluetoothLeAdvertiser.stopAdvertising(it)
         }
     }
 
@@ -89,21 +98,26 @@ class PeripheralActivity : AppCompatActivity() {
             .setIncludeDeviceName(true)
             .build()
 
+        val callback = object : AdvertiseCallback() {
+            override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
+                super.onStartSuccess(settingsInEffect)
+                Log.d(TAG, "onStartSuccess: success")
+            }
+
+            override fun onStartFailure(errorCode: Int) {
+                super.onStartFailure(errorCode)
+                Log.d(TAG, "onStartFailure: failed in starting ble")
+            }
+        }
+
+        mAdvertiseCallback = callback
+
         mBleManager.adapter.bluetoothLeAdvertiser.startAdvertising(
             settings,
             data,
             response,
-            object : AdvertiseCallback() {
-                override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-                    super.onStartSuccess(settingsInEffect)
-                    Log.d(TAG, "onStartSuccess: success")
-                }
-
-                override fun onStartFailure(errorCode: Int) {
-                    super.onStartFailure(errorCode)
-                    Log.d(TAG, "onStartFailure: failed in starting ble")
-                }
-            })
+            callback
+        )
     }
 
     companion object {
