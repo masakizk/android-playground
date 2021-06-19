@@ -24,9 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".device.DeviceActivity" />
-        <activity android:name=".devices.DeviceListActivity" />
-        <activity android:name=".peripheral.PeripheralActivity"/>
+
+        <activity android:name=".ble.BleDeviceListActivity" />
+        <activity android:name=".ble.BleDeviceActivity" />
+        <activity android:name=".ble.BlePeripheralActivity"/>
+
+        <activity android:name=".socket.SocketDeviceListActivity"/>
+        <activity android:name=".socket.SocketDeviceActivity"/>
+        <activity android:name=".socket.SocketPeripheralActivity"/>
     </application>
 
 </manifest>

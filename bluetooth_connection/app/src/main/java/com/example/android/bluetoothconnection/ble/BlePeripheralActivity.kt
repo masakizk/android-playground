@@ -1,4 +1,4 @@
-package com.example.android.bluetoothconnection.peripheral
+package com.example.android.bluetoothconnection.ble
 
 import android.bluetooth.*
 import android.bluetooth.le.AdvertiseCallback
@@ -12,23 +12,27 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.android.bluetoothconnection.databinding.ActivityPeripheralBinding
+import com.example.android.bluetoothconnection.databinding.ActivityBlePeripheralBinding
 import java.util.*
 
-class PeripheralActivity : AppCompatActivity() {
-    private lateinit var mBinding: ActivityPeripheralBinding
+class BlePeripheralActivity : AppCompatActivity() {
+    private lateinit var mBinding: ActivityBlePeripheralBinding
     private lateinit var mBleManager: BluetoothManager
     private lateinit var mGattServer: BluetoothGattServer
     private var mAdvertiseCallback: AdvertiseCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = ActivityPeripheralBinding.inflate(layoutInflater)
+        mBinding = ActivityBlePeripheralBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
         mBleManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
 
-        val gattServerCallback = TextMessageBluetoothGattServerCallback(lifecycleScope, mBinding)
+        val gattServerCallback = TextMessageBluetoothGattServerCallback(
+            lifecycleScope,
+            mBinding.textReceivedMessage,
+            mBinding.textDeviceAddress
+        )
         mGattServer = mBleManager.openGattServer(this, gattServerCallback)
         gattServerCallback.mGattServer = mGattServer
 

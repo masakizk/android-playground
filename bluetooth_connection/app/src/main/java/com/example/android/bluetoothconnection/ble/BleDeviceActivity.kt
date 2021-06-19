@@ -1,4 +1,4 @@
-package com.example.android.bluetoothconnection.device
+package com.example.android.bluetoothconnection.ble
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
@@ -12,16 +12,15 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.android.bluetoothconnection.databinding.ActivityDeviceBinding
-import com.example.android.bluetoothconnection.peripheral.PeripheralActivity
+import com.example.android.bluetoothconnection.databinding.ActivityBleDeviceBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.min
 
-class DeviceActivity : AppCompatActivity() {
+class BleDeviceActivity : AppCompatActivity() {
 
-    private lateinit var mBinding: ActivityDeviceBinding
+    private lateinit var mBinding: ActivityBleDeviceBinding
     private lateinit var mBluetoothAdapter: BluetoothAdapter
     private var mBluetoothGatt: BluetoothGatt? = null
     private val mDeviceName: String get() = intent.getStringExtra(PARAM_DEVICE_NAME)!!
@@ -32,11 +31,11 @@ class DeviceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        mBinding = ActivityDeviceBinding.inflate(layoutInflater)
+        mBinding = ActivityBleDeviceBinding.inflate(layoutInflater)
         mBinding.apply {
             textDeviceAddress.text = mDeviceAddress
             textDeviceName.text = mDeviceName
-            editTextMessage.setText((0..1000).joinToString(separator = "\n") { "HELLO WORLD" })
+            editTextMessage.setText("HELLO WORLD")
 
             buttonConnect.setOnClickListener { connect() }
             buttonDisconnect.setOnClickListener { disconnect() }
@@ -107,7 +106,8 @@ class DeviceActivity : AppCompatActivity() {
         val bytes = mBinding.editTextMessage.text.toString().toByteArray()
         if (bytes.size > 512) {
             lifecycleScope.launch(Dispatchers.Main) {
-                Toast.makeText(this@DeviceActivity, "message is too long", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@BleDeviceActivity, "message is too long", Toast.LENGTH_LONG)
+                    .show()
             }
             return
         }
@@ -119,14 +119,14 @@ class DeviceActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.Main) {
             Toast.makeText(
-                this@DeviceActivity,
+                this@BleDeviceActivity,
                 "MTU: $mMtu\ndata: ${bytes.size}bytes",
                 Toast.LENGTH_LONG
             ).show()
         }
 
-        val service = gatt.getService(PeripheralActivity.UUID_SERVICE)
-        val characteristic = service.getCharacteristic(PeripheralActivity.UUID_WRITE)
+        val service = gatt.getService(BlePeripheralActivity.UUID_SERVICE)
+        val characteristic = service.getCharacteristic(BlePeripheralActivity.UUID_WRITE)
         for (i in 0..bytes.size step 100) {
             val to = min(i + 100, bytes.size)
             characteristic.value = bytes.copyOfRange(i, to)
@@ -145,7 +145,7 @@ class DeviceActivity : AppCompatActivity() {
         private const val TAG = "DeviceActivity"
 
         fun createIntent(context: Context, deviceName: String, deviceAddress: String): Intent {
-            return Intent(context, DeviceActivity::class.java).apply {
+            return Intent(context, BleDeviceActivity::class.java).apply {
                 putExtra(PARAM_DEVICE_NAME, deviceName)
                 putExtra(PARAM_DEVICE_ADDRESS, deviceAddress)
             }

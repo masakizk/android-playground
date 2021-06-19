@@ -32,9 +32,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/group_sender_info"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
@@ -44,7 +43,7 @@
             android:text="@string/sender_info" />
 
         <TextView
-            android:id="@+id/text_device_name"
+            android:id="@+id/text_device_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -52,13 +51,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Bluetooth Device" />
 
-        <TextView
-            android:id="@+id/text_device_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_device_name"
-            tools:text="00:00:00:00:00:00" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

@@ -1,4 +1,4 @@
-package com.example.android.bluetoothconnection.devices
+package com.example.android.bluetoothconnection.ble
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -13,9 +13,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.bluetoothconnection.databinding.ActivityDeviceListBinding
-import com.example.android.bluetoothconnection.device.DeviceActivity
+import com.example.android.bluetoothconnection.devices.DeviceListAdapter
+import com.example.android.bluetoothconnection.devices.DeviceViewHolder
 
-class DeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListener {
+class BleDeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListener {
     private lateinit var mBinding: ActivityDeviceListBinding
     private lateinit var mBluetoothAdapter: BluetoothAdapter
     private val mDevices: MutableMap<String, BluetoothDevice> = mutableMapOf()
@@ -29,7 +30,7 @@ class DeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListene
         mBinding = ActivityDeviceListBinding.inflate(layoutInflater)
         mBinding.apply {
             recyclerViewDevices.adapter = mBluetoothDeviceListAdapter
-            recyclerViewDevices.layoutManager = LinearLayoutManager(this@DeviceListActivity)
+            recyclerViewDevices.layoutManager = LinearLayoutManager(this@BleDeviceListActivity)
         }
         setContentView(mBinding.root)
 
@@ -64,7 +65,7 @@ class DeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListene
     }
 
     override fun onClick(device: BluetoothDevice) {
-        val intent = DeviceActivity.createIntent(
+        val intent = BleDeviceActivity.createIntent(
             this,
             deviceName = device.name,
             deviceAddress = device.address
@@ -92,7 +93,7 @@ class DeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListene
 
             override fun onScanFailed(errorCode: Int) {
                 super.onScanFailed(errorCode)
-                Toast.makeText(this@DeviceListActivity, "Failed: $errorCode", Toast.LENGTH_LONG)
+                Toast.makeText(this@BleDeviceListActivity, "Failed: $errorCode", Toast.LENGTH_LONG)
                     .show()
                 Log.d(TAG, "onScanFailed: $errorCode")
             }

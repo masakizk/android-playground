@@ -1,17 +1,18 @@
-package com.example.android.bluetoothconnection.peripheral
+package com.example.android.bluetoothconnection.ble
 
 import android.bluetooth.*
 import android.util.Log
-import com.example.android.bluetoothconnection.databinding.ActivityPeripheralBinding
+import android.widget.TextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class TextMessageBluetoothGattServerCallback(
     private val scope: CoroutineScope,
-    private val binding: ActivityPeripheralBinding,
+    private val textViewMessage: TextView,
+    private val textViewSenderAddress: TextView,
 ) : BluetoothGattServerCallback() {
-    private val charValue = ByteArray(PeripheralActivity.UUID_VALUE_SIZE)
+    private val charValue = ByteArray(BlePeripheralActivity.UUID_VALUE_SIZE)
 
     private var _mGattServer: BluetoothGattServer? = null
     var mGattServer
@@ -68,10 +69,13 @@ class TextMessageBluetoothGattServerCallback(
             offset,
             value
         )
-        Log.d(TAG, "onCharacteristicReadRequest: [$requestId] $offset-${offset + value.size} ${String(value)}")
+        Log.d(
+            TAG,
+            "onCharacteristicReadRequest: [$requestId] $offset-${offset + value.size} ${String(value)}"
+        )
         if (_mGattServer == null) return
 
-        if (characteristic?.uuid != PeripheralActivity.UUID_WRITE) {
+        if (characteristic?.uuid != BlePeripheralActivity.UUID_WRITE) {
             mGattServer.sendResponse(
                 device,
                 requestId,
@@ -83,11 +87,8 @@ class TextMessageBluetoothGattServerCallback(
         }
 
         scope.launch(Dispatchers.Main) {
-            binding.apply {
-                textReceivedMessage.text = String(value)
-                textDeviceAddress.text = device?.address
-                textDeviceName.text = device?.name
-            }
+            textViewMessage.text = String(value)
+            textViewSenderAddress.text = device?.address
         }
 
         mGattServer.sendResponse(
