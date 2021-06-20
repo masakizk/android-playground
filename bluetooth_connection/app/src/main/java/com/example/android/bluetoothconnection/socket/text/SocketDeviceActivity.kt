@@ -1,4 +1,4 @@
-package com.example.android.bluetoothconnection.socket
+package com.example.android.bluetoothconnection.socket.text
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket

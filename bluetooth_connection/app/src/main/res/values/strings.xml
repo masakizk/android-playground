@@ -18,4 +18,6 @@
     <string name="socket_peripheral">socket peripheral</string>
     <string name="connected_device">connected device:</string>
     <string name="none">NONE</string>
+    <string name="send">send</string>
+    <string name="image_transfer">Image Transfer</string>
 </resources>

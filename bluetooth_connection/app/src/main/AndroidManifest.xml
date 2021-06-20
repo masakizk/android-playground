@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -27,11 +29,15 @@
 
         <activity android:name=".ble.BleDeviceListActivity" />
         <activity android:name=".ble.BleDeviceActivity" />
-        <activity android:name=".ble.BlePeripheralActivity"/>
+        <activity android:name=".ble.BlePeripheralActivity" />
 
-        <activity android:name=".socket.SocketDeviceListActivity"/>
-        <activity android:name=".socket.SocketDeviceActivity"/>
-        <activity android:name=".socket.SocketPeripheralActivity"/>
+        <activity android:name=".socket.text.SocketDeviceListActivity" />
+        <activity android:name=".socket.text.SocketDeviceActivity" />
+        <activity android:name=".socket.text.SocketPeripheralActivity" />
+
+        <activity android:name=".socket.image.ImageSocketDeviceListActivity" />
+        <activity android:name=".socket.image.ImageTransferCentralActivity" />
+        <activity android:name=".socket.image.ImageTransferPeripheralActivity" />
     </application>
 
 </manifest>

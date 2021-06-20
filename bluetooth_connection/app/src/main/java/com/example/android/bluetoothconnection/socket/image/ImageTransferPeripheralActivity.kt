@@ -1,30 +1,32 @@
-package com.example.android.bluetoothconnection.socket
+package com.example.android.bluetoothconnection.socket.image
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.android.bluetoothconnection.databinding.ActivitySocketPeripheralBinding
+import com.example.android.bluetoothconnection.databinding.ActivityImagePeripheralBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.lang.Integer.parseInt
 import java.util.*
 
-class SocketPeripheralActivity : AppCompatActivity() {
-    private lateinit var mBinding: ActivitySocketPeripheralBinding
+class ImageTransferPeripheralActivity : AppCompatActivity() {
+    private lateinit var mBinding: ActivityImagePeripheralBinding
     private lateinit var mBluetoothAdapter: BluetoothAdapter
     private var mBluetoothServerSocket: BluetoothServerSocket? = null
+    private var mBluetoothSocket: BluetoothSocket? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = ActivitySocketPeripheralBinding.inflate(layoutInflater)
+        mBinding = ActivityImagePeripheralBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
@@ -45,6 +47,7 @@ class SocketPeripheralActivity : AppCompatActivity() {
         while (shouldLoop) {
             kotlin.runCatching {
                 val socket = mBluetoothServerSocket?.accept() ?: return@launch
+                mBluetoothSocket = socket
                 withContext(Dispatchers.Main) { connected(socket) }
                 receive(socket)
                 shouldLoop = false
@@ -60,38 +63,69 @@ class SocketPeripheralActivity : AppCompatActivity() {
     }
 
     private fun receive(socket: BluetoothSocket) = lifecycleScope.launch(Dispatchers.IO) {
-        while (true) {
-            try {
-                val buffer = ByteArray(1024)
-                val bytes: Int = socket.inputStream.read(buffer)
+        var totalNumBytes = 0
+        var flag = true
+        var buffer: ByteArray? = null
+        var bytePosition = 0
 
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        this@SocketPeripheralActivity,
-                        "$bytes bytes",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    mBinding.textReceivedMessage.text = String(buffer)
+        while (true) {
+            if (flag) {
+                try {
+                    val tmp = ByteArray(socket.inputStream.available())
+                    if (socket.inputStream.read(tmp) > 0) {
+                        totalNumBytes = parseInt(String(tmp, Charsets.UTF_8))
+                        buffer = ByteArray(totalNumBytes)
+                        flag = false
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "receive: error while reading data", e)
+                    continue
+                }
+                continue
+            }
+
+            try {
+                if (buffer == null) break
+
+                val data = ByteArray(socket.inputStream.available())
+                val byteCount = socket.inputStream.read(data)
+                System.arraycopy(data, 0, buffer, bytePosition, byteCount)
+                bytePosition += byteCount
+
+                if (bytePosition == totalNumBytes) {
+                    setImage(buffer, totalNumBytes)
+
+                    buffer = null
+                    totalNumBytes = 0
+                    bytePosition = 0
+                    flag = true
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "receive: error while reading data", e)
-
-                withContext(Dispatchers.Main) {
-                    Toast
-                        .makeText(this@SocketPeripheralActivity, "done", Toast.LENGTH_LONG)
-                        .show()
-                }
                 break
             }
         }
     }
 
+    override fun onDestroy() {
+        mBluetoothSocket?.close()
+        mBluetoothServerSocket?.close()
+        super.onDestroy()
+    }
+
+    private suspend fun setImage(bytes: ByteArray, byteLength: Int) {
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, byteLength)
+        withContext(Dispatchers.Main) {
+            mBinding.imageView.setImageBitmap(bitmap)
+        }
+    }
+
     companion object {
-        private const val TAG = "SocketPeripheralActivit"
+        private const val TAG = "ImageTransferPeripheral"
         val UUID_SERVICE: UUID = UUID.fromString("a9d158bb-9007-4fe3-b5d2-d3696a3eb067")
 
         fun createIntent(context: Context): Intent {
-            return Intent(context, SocketPeripheralActivity::class.java)
+            return Intent(context, ImageTransferPeripheralActivity::class.java)
         }
     }
 }

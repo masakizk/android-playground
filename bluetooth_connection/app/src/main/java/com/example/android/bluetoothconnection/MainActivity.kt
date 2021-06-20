@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.android.bluetoothconnection.ble.BleDeviceListActivity
 import com.example.android.bluetoothconnection.ble.BlePeripheralActivity
 import com.example.android.bluetoothconnection.databinding.ActivityMainBinding
-import com.example.android.bluetoothconnection.socket.SocketDeviceListActivity
-import com.example.android.bluetoothconnection.socket.SocketPeripheralActivity
+import com.example.android.bluetoothconnection.socket.image.ImageSocketDeviceListActivity
+import com.example.android.bluetoothconnection.socket.image.ImageTransferPeripheralActivity
+import com.example.android.bluetoothconnection.socket.text.SocketDeviceListActivity
+import com.example.android.bluetoothconnection.socket.text.SocketPeripheralActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +37,17 @@ class MainActivity : AppCompatActivity() {
             }
 
             buttonSocketPeripheral.setOnClickListener {
-                val intent = Intent(this@MainActivity, SocketPeripheralActivity::class.java)
+                val intent = SocketPeripheralActivity.createIntent(this@MainActivity)
+                startActivity(intent)
+            }
+
+            buttonImageSocketCentral.setOnClickListener {
+                val intent = Intent(this@MainActivity, ImageSocketDeviceListActivity::class.java)
+                startActivity(intent)
+            }
+
+            buttonImageSocketPeripheral.setOnClickListener {
+                val intent = ImageTransferPeripheralActivity.createIntent(this@MainActivity)
                 startActivity(intent)
             }
         }

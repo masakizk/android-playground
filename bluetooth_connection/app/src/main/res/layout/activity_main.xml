@@ -46,4 +46,23 @@
         android:layout_height="wrap_content"
         android:text="@string/peripheral" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:text="@string/image_transfer"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/button_image_socket_central"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/central" />
+
+    <Button
+        android:id="@+id/button_image_socket_peripheral"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/peripheral" />
+
 </androidx.appcompat.widget.LinearLayoutCompat>

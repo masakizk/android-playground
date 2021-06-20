@@ -1,4 +1,4 @@
-package com.example.android.bluetoothconnection.socket
+package com.example.android.bluetoothconnection.socket.image
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -18,7 +18,7 @@ import com.example.android.bluetoothconnection.devices.DeviceViewHolder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SocketDeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListener {
+class ImageSocketDeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackListener {
     private lateinit var mBinding: ActivityDeviceListBinding
     private lateinit var mBluetoothAdapter: BluetoothAdapter
     private val mDevices: MutableMap<String, BluetoothDevice> = mutableMapOf()
@@ -46,7 +46,8 @@ class SocketDeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackL
         mBinding = ActivityDeviceListBinding.inflate(layoutInflater)
         mBinding.apply {
             recyclerViewDevices.adapter = mBluetoothDeviceListAdapter
-            recyclerViewDevices.layoutManager = LinearLayoutManager(this@SocketDeviceListActivity)
+            recyclerViewDevices.layoutManager =
+                LinearLayoutManager(this@ImageSocketDeviceListActivity)
         }
         setContentView(mBinding.root)
 
@@ -89,7 +90,7 @@ class SocketDeviceListActivity : AppCompatActivity(), DeviceViewHolder.CallbackL
     }
 
     override fun onClick(device: BluetoothDevice) {
-        val intent = SocketDeviceActivity.createIntent(
+        val intent = ImageTransferCentralActivity.createIntent(
             this,
             deviceName = device.name,
             deviceAddress = device.address,
