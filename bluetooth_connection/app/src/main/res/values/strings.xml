@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">BluetoothConnection</string>
+    <string name="disconnect">disconnect</string>
+    <string name="connect">connect</string>
+    <string name="send_message">send message</string>
+    <string name="receive_message">receive message</string>
+    <string name="central">central</string>
+    <string name="peripheral">peripheral</string>
+    <string name="received_message">received message</string>
+    <string name="sender_info">sender info</string>
+    <string name="socket">socket</string>
+    <string name="ble">ble</string>
+    <string name="sender">sender</string>
+    <string name="receiver">receiver</string>
+    <string name="ble_central">ble central</string>
+    <string name="ble_peripheral">ble peripheral</string>
+    <string name="socket_central">socket central</string>
+    <string name="socket_peripheral">socket peripheral</string>
+    <string name="connected_device">connected device:</string>
+    <string name="none">NONE</string>
+    <string name="send">send</string>
+    <string name="image_transfer">Image Transfer</string>
+</resources>

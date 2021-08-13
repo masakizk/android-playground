@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="36dp"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:text="@string/ble"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/button_ble_central"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/central" />
+
+    <Button
+        android:id="@+id/button_ble_peripheral"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/peripheral" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:text="@string/socket"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/button_socket_central"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/central" />
+
+    <Button
+        android:id="@+id/button_socket_peripheral"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/peripheral" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:text="@string/image_transfer"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/button_image_socket_central"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/central" />
+
+    <Button
+        android:id="@+id/button_image_socket_peripheral"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/peripheral" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
