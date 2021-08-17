@@ -10,8 +10,15 @@
         <action
             android:id="@+id/action_root_to_image_view"
             app:destination="@id/imageViewFragment" />
+        <action
+            android:id="@+id/action_root_to_take_photo"
+            app:destination="@id/takePhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageViewFragment"
         android:name="com.example.mediastore.ui.ImageViewFragment" />
+    <fragment
+        android:id="@+id/takePhotoFragment"
+        android:name="com.example.mediastore.ui.TakePhotoFragment"
+        android:label="TakePhotoFragment" />
 </navigation>

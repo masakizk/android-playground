@@ -20,6 +20,7 @@ class RootFragment : Fragment() {
         binding = FragmentRootBinding.inflate(inflater, container, false)
         binding.apply {
             buttonShowImages.setOnClickListener { findNavController().navigate(R.id.action_root_to_image_view) }
+            buttonTakePhoto.setOnClickListener { findNavController().navigate(R.id.action_root_to_take_photo) }
         }
         return binding.root
     }
