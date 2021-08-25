@@ -1,7 +1,9 @@
 package com.example.android.service
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.view.WindowManager
@@ -13,29 +15,6 @@ class FullscreenActivity : AppCompatActivity() {
     private val mBinding get() = _mBinding!!
 
     private var mWakeLock: PowerManager.WakeLock? = null
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        mWakeLock = powerManager.newWakeLock(
-            PowerManager.SCREEN_BRIGHT_WAKE_LOCK
-                    or PowerManager.ACQUIRE_CAUSES_WAKEUP,
-            "FullScreenActivity::WAKE_LOCK"
-        ).apply {
-            acquire()
-        }
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true)
-            setTurnScreenOn(true)
-        } else {
-            window.addFlags(
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-            )
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +29,22 @@ class FullscreenActivity : AppCompatActivity() {
         }
 
         setContentView(mBinding.root)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        } else {
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+            )
+        }
+
+        with(getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                requestDismissKeyguard(this@FullscreenActivity, null)
+            }
+        }
     }
 
     private fun releaseWakeLock() {

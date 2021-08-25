@@ -27,6 +27,7 @@
             android:showOnLockScreen="true" />
 
         <service android:name=".MainActivityService" />
+        <service android:name=".ScheduledService" />
         <service android:name=".FullScreenService" />
     </application>
 

@@ -20,8 +20,29 @@
         android:id="@+id/button_start_fullscreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Full Screen Service"
+        android:text="@string/start_full_screen_service"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_schedule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/scheduled_service" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stepSize="10"
+        android:value="10"
+        android:valueFrom="10"
+        android:valueTo="1200" />
+
+    <TextView
+        android:id="@+id/text_elapsed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ELAPSED" />
 
 </LinearLayout>
