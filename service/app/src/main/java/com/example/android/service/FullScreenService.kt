@@ -1,126 +1,104 @@
 package com.example.android.service
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
-import android.os.Vibrator
+import android.os.SystemClock
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
+import androidx.core.app.AlarmManagerCompat
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * Android10以降、バックグラウンドからActivityを起動するには、様々な制限がある。
+ * https://www.google.com/search?q=android+service+startActivity&rlz=1C5CHFA_enJP861JP861&oq=android+service+startActivity&aqs=chrome..69i57j0i30l2.7495j0j7&sourceid=chrome&ie=UTF-8
+ * よって、setFullScreenIntent により、スリープ時にのみActivityを起動できるようにし、それ以外は通常の通知として表示させることが推奨されている。
+ */
 class FullScreenService : Service() {
-    private lateinit var mNotificationManager: NotificationManager
-
-    private val scope = CoroutineScope(Dispatchers.Default)
+    private lateinit var mNotificationManager: NotificationManagerCompat
 
     override fun onCreate() {
         super.onCreate()
-        mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        startForeground(NOTIFICATION_ID, createNotification("start"))
+        mNotificationManager = NotificationManagerCompat.from(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        scope.launch {
-            delay(5000)
+        when (intent?.action) {
+            ACTION_START -> {
+                Log.d(TAG, "onStartCommand: $ACTION_START")
+                startForeground(NotificationConstants.NORMAL.ID, createNotification("start"))
 
-            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-            val wakeLock = powerManager.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK,
-                "FullScreenService::WAKE_LOCK"
-            ).apply {
-                acquire()
+                val intent = createFullscreenIntent(this)
+                val pendingIntent = PendingIntent.getService(
+                    this,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val trigger = SystemClock.elapsedRealtime() + 5 * 1000L
+                AlarmManagerCompat.setExactAndAllowWhileIdle(
+                    alarmManager,
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    trigger,
+                    pendingIntent
+                )
+                stopForeground(true)
+                stopSelf(startId)
             }
 
-            /**
-             * Show fullscreen activity.
-             */
-//            val fullScreenIntent =
-//                Intent(applicationContext, FullscreenActivity::class.java).apply {
-//                    setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                }
-//            val fullscreenPendingIntent = PendingIntent.getActivity(
-//                applicationContext,
-//                0,
-//                fullScreenIntent,
-//                PendingIntent.FLAG_UPDATE_CURRENT
-//            )
-//            fullscreenPendingIntent.send()
+            ACTION_FULLSCREEN -> {
+                Log.d(TAG, "onStartCommand: $ACTION_FULLSCREEN")
+                mNotificationManager.cancel(NotificationConstants.HeadUp.ID)
+                mNotificationManager.notify(
+                    NotificationConstants.HeadUp.ID,
+                    createFullscreenNotification("DONE")
+                )
 
-            val notification = createNotification("Do some work...", fullscreen = true)
-            startForeground(NOTIFICATION_ID, notification)
+                // すぐに停止すると、Activityが起動しないことがある。
+                CoroutineScope(Dispatchers.Default).launch {
+                    delay(1 * 1000L)
+                    mNotificationManager.notify(
+                        NotificationConstants.HeadUp.ID,
+                        createFullscreenNotification("UPDATE")
+                    )
 
-            val mVibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            mVibrator.vibrate(longArrayOf(0, 500, 500), -1)
-
-            wakeLock.release()
-
-            delay(5000)
-            stopSelf()
+                    delay(5 * 1000L)
+                    stopSelf()
+                }
+            }
         }
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-    private fun createNotification(message: String, fullscreen: Boolean = false): Notification {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel()
-        }
-        val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).apply {
-            setSmallIcon(R.drawable.ic_launcher_foreground)
-            setChannelId(NOTIFICATION_CHANNEL_ID)
-            setContentTitle("FULLSCREEN SERVICE")
-            setContentText(message)
-
-            priority = NotificationCompat.PRIORITY_HIGH
-            setCategory(NotificationCompat.CATEGORY_ALARM)
-        }
-
-        if(fullscreen){
-            Log.d(TAG, "createNotification: Create")
-            /**
-             * https://developer.android.com/training/notify-user/time-sensitive
-             * https://developer.android.com/guide/components/activities/background-starts
-             */
-            val fullScreenIntent = Intent(applicationContext, FullscreenActivity::class.java)
-            val fullscreenPendingIntent = PendingIntent.getActivity(
-                applicationContext,
-                0,
-                fullScreenIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            notificationBuilder.setFullScreenIntent(fullscreenPendingIntent, true)
-        }
-
-        return notificationBuilder.build()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            "full screen service",
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        mNotificationManager.createNotificationChannel(channel)
-    }
-
     companion object {
-        private const val NOTIFICATION_ID = 2000
-        private const val NOTIFICATION_CHANNEL_ID = "FULLSCREEN_SERVICE"
+        private const val ACTION_START = "START"
+        private const val ACTION_FULLSCREEN = "FULLSCREEN"
+
+        fun createStartIntent(context: Context): Intent {
+            return Intent(context, FullScreenService::class.java).apply {
+                action = ACTION_START
+            }
+        }
+
+        fun createFullscreenIntent(context: Context): Intent {
+            return Intent(context, FullScreenService::class.java).apply {
+                action = ACTION_FULLSCREEN
+            }
+        }
 
         private const val TAG = "FullScreenService"
-
     }
 }
