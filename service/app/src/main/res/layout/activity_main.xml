@@ -30,6 +30,12 @@
         android:layout_height="wrap_content"
         android:text="@string/scheduled_service" />
 
+    <Button
+        android:id="@+id/button_schedule_per_min"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/schedule_service_per_min" />
+
     <com.google.android.material.slider.Slider
         android:id="@+id/slider_duration"
         android:layout_width="match_parent"
@@ -44,5 +50,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ELAPSED" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/text_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="clear log" />
 
 </LinearLayout>

@@ -4,4 +4,5 @@
     <string name="done">Done</string>
     <string name="scheduled_service">Scheduled Service</string>
     <string name="start_full_screen_service">Start Full Screen Service</string>
+    <string name="schedule_service_per_min">Schedule service per min</string>
 </resources>

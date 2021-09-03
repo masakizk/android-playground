@@ -1,15 +1,18 @@
 package com.example.android.service
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
+import androidx.core.app.AlarmManagerCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +44,8 @@ class ScheduledService : Service() {
             return mSharedPreferences.getLong(KEY_STARTED_AT, 0L)
         }
 
+    private val mLogger get() = MyLogger(this, "ScheduledService")
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -49,30 +54,46 @@ class ScheduledService : Service() {
         super.onCreate()
         mAlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         mNotificationManager = NotificationManagerCompat.from(this)
-        startForeground(NOTIFICATION_ID, createNotification("starting"))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_COUNT_UP -> {
+                startForeground(NotificationConstants.NORMAL.ID, createNotification("starting"))
                 val argDuration = intent.getLongExtra(ARG_DURATION, -1L)
                 val savedDuration = mSharedPreferences.getLong(ARG_DURATION, -1L)
                 if (argDuration == -1L && savedDuration == -1L) return START_NOT_STICKY
                 val duration = if (argDuration != -1L) argDuration else savedDuration
                 mSharedPreferences.edit { putLong(ARG_DURATION, duration) }
+
                 scheduleFullscreen(applicationContext, duration)
 
                 // 1秒おきに通知を更新する
                 CoroutineScope(Dispatchers.Default).launch {
                     startTimer(duration)
-                    stopSelf()
+
+                    stopForeground(true)
+                    stopSelf(startId)
                 }
+//                startTimerWithThread(duration)
 
                 return START_STICKY
             }
 
             ACTION_FULLSCREEN -> {
-                startActivity(this)
+                Log.d(TAG, "onStartCommand: $ACTION_FULLSCREEN")
+                val notification = createFullscreenNotification("DONE")
+                mNotificationManager.cancel(NotificationConstants.HeadUp.ID)
+                startForeground(NotificationConstants.HeadUp.ID, notification)
+
+                mLogger.i("DONE")
+
+                CoroutineScope(Dispatchers.Default).launch {
+                    // 10秒後に自動停止
+                    delay(10 * 1000L)
+                    stopForeground(true)
+                    stopSelf(startId)
+                }
                 return START_NOT_STICKY
             }
 
@@ -81,96 +102,95 @@ class ScheduledService : Service() {
                     remove(KEY_STARTED_AT)
                     remove(ARG_DURATION)
                 }
+
+                val fullscreen = createFullscreenServiceIntent(applicationContext)
+                // AlarmManagerをキャンセル
+                val pendingIntent = PendingIntent.getService(
+                    applicationContext,
+                    REQUEST_FULLSCREEN,
+                    fullscreen,
+                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_NO_CREATE
+                )
+                if (pendingIntent != null) {
+                    val alarmManager =
+                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    alarmManager.cancel(pendingIntent)
+                    pendingIntent.cancel()
+                }
                 return START_NOT_STICKY
             }
         }
         return START_NOT_STICKY
     }
 
-    private fun startActivity(context: Context) {
-        val activityIntent = Intent(context, FullscreenActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            activityIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        kotlin.runCatching {
-            // 起動
-            pendingIntent.send()
-        }.onFailure {
-            Log.e(TAG, "startActivity: failed in launching activity", it)
-        }
-    }
-
     private suspend fun startTimer(duration: Long) {
         while (true) {
             val now = Calendar.getInstance().timeInMillis
             val elapsed = now - startedAt
-            if (elapsed > duration) break
+            mLogger.i("startTimer - ${elapsed / 1000}")
+            if (elapsed > duration) {
+                ContextCompat.startForegroundService(
+                    this,
+                    createFullscreenServiceIntent(this)
+                )
+                break
+            }
 
             val notification = createNotification("${elapsed / 1000}")
-            mNotificationManager.cancel(NOTIFICATION_ID) // 優先度が低いため、キャンセルしないと更新されない
-            startForeground(NOTIFICATION_ID, notification)
+            mNotificationManager.cancel(NotificationConstants.NORMAL.ID) // 優先度が低いため、キャンセルしないと更新されない
+            startForeground(NotificationConstants.NORMAL.ID, notification)
 
             mSharedPreferences.edit(commit = true) { putLong(KEY_UPDATED_AT, now) }
             delay(1000)
         }
     }
 
-    private fun createNotification(message: String): Notification {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel()
+    private fun startTimerWithThread(duration: Long) {
+        val handler = Handler(Looper.getMainLooper())
+        val runner = object : Runnable {
+            override fun run() {
+                val now = Calendar.getInstance().timeInMillis
+                val elapsed = now - startedAt
+                mLogger.i("startTimer - ${elapsed / 1000}")
+                if (elapsed > duration) {
+                    stopSelf()
+                    stopForeground(true)
+                    return
+                }
+
+                val notification = createNotification("${elapsed / 1000}")
+                mNotificationManager.cancel(NotificationConstants.NORMAL.ID) // 優先度が低いため、キャンセルしないと更新されない
+                mNotificationManager.notify(NotificationConstants.NORMAL.ID, notification)
+
+                mSharedPreferences.edit(commit = true) { putLong(KEY_UPDATED_AT, now) }
+                handler.postDelayed(this, 1000)
+            }
         }
-
-        val notificationBuilder = NotificationCompat.Builder(
-            this,
-            NOTIFICATION_CHANNEL_ID
-        ).apply {
-            setSmallIcon(R.drawable.ic_launcher_foreground)
-            setChannelId(NOTIFICATION_CHANNEL_ID)
-            setContentTitle("SCHEDULED SERVICE")
-            setContentText(message)
-            setOngoing(true)
-        }
-
-        return notificationBuilder.build()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            "main activity service",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        mNotificationManager.createNotificationChannel(channel)
+        handler.post(runner)
     }
 
     private fun scheduleFullscreen(context: Context, duration: Long) {
         val fullscreenIntent = createFullscreenServiceIntent(context)
         val pendingIntent = PendingIntent.getService(
             context,
-            1000,
+            REQUEST_FULLSCREEN,
             fullscreenIntent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT
         )
         val triggerTime = SystemClock.elapsedRealtime() + duration
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mAlarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                triggerTime,
-                pendingIntent
-            )
-        } else {
-            mAlarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, pendingIntent)
-        }
+        AlarmManagerCompat.setExactAndAllowWhileIdle(
+            mAlarmManager,
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            triggerTime,
+            pendingIntent
+        )
     }
 
     companion object {
         private const val TAG = "ScheduledService"
         const val NAME_SHARED_PREF = "schedule"
+
+        private const val REQUEST_FULLSCREEN = 1000
         private const val ACTION_RESET = "RESET"
         private const val ACTION_COUNT_UP = "COUNT_UP"
         private const val ACTION_FULLSCREEN = "FULLSCREEN"
@@ -180,9 +200,6 @@ class ScheduledService : Service() {
         private const val KEY_STARTED_AT = "STARTED_AT"
         const val KEY_LAST_STARTED_AT = "LAST_STARTED_AT"
         const val KEY_UPDATED_AT = "UPDATED_AT"
-
-        private const val NOTIFICATION_ID = 4000
-        private const val NOTIFICATION_CHANNEL_ID = "SCHEDULED_SERVICE"
 
         fun createCountUpServiceIntent(context: Context, duration: Long): Intent {
             return Intent(context, ScheduledService::class.java).apply {

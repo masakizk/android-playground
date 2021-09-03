@@ -3,11 +3,14 @@ package com.example.android.service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.android.service.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -19,6 +22,9 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         )
     }
 
+    val mLogger = MyLogger(this@MainActivity, "MainActivity")
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,22 +33,12 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         mBinding.apply {
             buttonStartMain.setOnClickListener {
                 val serviceIntent = Intent(applicationContext, MainActivityService::class.java)
-
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    startForegroundService(serviceIntent)
-                } else {
-                    startService(serviceIntent)
-                }
+                startServiceCompat(serviceIntent)
             }
 
             buttonStartFullscreen.setOnClickListener {
-                val serviceIntent = Intent(applicationContext, FullScreenService::class.java)
-
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    startForegroundService(serviceIntent)
-                } else {
-                    startService(serviceIntent)
-                }
+                val serviceIntent = FullScreenService.createStartIntent(this@MainActivity)
+                startServiceCompat(serviceIntent)
             }
 
             buttonSchedule.setOnClickListener {
@@ -51,13 +47,22 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                 val serviceIntent =
                     ScheduledService.createCountUpServiceIntent(this@MainActivity, durationInMill)
 
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    startForegroundService(resetIntent)
-                    startForegroundService(serviceIntent)
-                } else {
-                    startService(resetIntent)
-                    startService(serviceIntent)
-                }
+                startServiceCompat(resetIntent)
+                startServiceCompat(serviceIntent)
+            }
+
+            buttonSchedulePerMin.setOnClickListener {
+                val durationInMill = sliderDuration.value.toLong() * 1000
+                val resetIntent =
+                    ScheduledServicePerOneMin.createResetServiceIntent(this@MainActivity)
+                val serviceIntent =
+                    ScheduledServicePerOneMin.createStartServiceIntent(
+                        this@MainActivity,
+                        durationInMill
+                    )
+
+                startServiceCompat(resetIntent)
+                startServiceCompat(serviceIntent)
             }
         }
 
@@ -68,11 +73,24 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         mSharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
         setContentView(mBinding.root)
+
+        mBinding.buttonClear.setOnClickListener { mLogger.clear() }
+        lifecycleScope.launch(Dispatchers.IO) {
+            while (true) {
+                val logs = mLogger.getLogs()
+                runOnUiThread { mBinding.textLog.text = logs }
+                delay(1000)
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun startServiceCompat(intent: Intent) {
+        ContextCompat.startForegroundService(this, intent)
     }
 
     companion object {
