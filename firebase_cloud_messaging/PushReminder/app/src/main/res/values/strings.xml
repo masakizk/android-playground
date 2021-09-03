@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PushReminder</string>
+    <string name="user_info">User info</string>
+    <string name="step_one">1- Sign In</string>
+    <string name="step_two">2 - get token</string>
+    <string name="step_three">3 - Send Message</string>
+    <string name="step_four">4 - sign out</string>
+</resources>
